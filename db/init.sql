@@ -99,6 +99,26 @@ CREATE TABLE public.publicacion_etiqueta (
 );
 
 
+-- public.reporte definition
+
+-- Drop table
+
+-- DROP TABLE public.reporte;
+
+CREATE TABLE public.reporte (
+	idreporte serial4 NOT NULL,
+	idusuario int4 NULL,
+	idpublicacion int4 NOT NULL,
+	motivo varchar(100) NOT NULL,
+	descripcion text NULL,
+	fecha timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	estado varchar(50) DEFAULT 'pendiente'::character varying NULL,
+	CONSTRAINT reporte_pkey PRIMARY KEY (idreporte),
+	CONSTRAINT fk_pub_reportada FOREIGN KEY (idpublicacion) REFERENCES public.publicacion(idpublicacion) ON DELETE CASCADE,
+	CONSTRAINT fk_usuario_reporta FOREIGN KEY (idusuario) REFERENCES public.usuario(idusuario) ON DELETE SET NULL
+);
+
+
 -- public.sigue definition
 
 -- Drop table
