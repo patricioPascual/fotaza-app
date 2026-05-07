@@ -1,24 +1,21 @@
 import express from 'express';
-import { client } from './db.js'; 
+import sequelize from './db.js'; 
+import './sync.js';
 import 'dotenv/config';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 
-async function pruebaDeCOnexion(){
-   try {
-        
-        const res = await client.query('SELECT NOW() as hora');
-        console.log("Conexión OK Hora en DB:", res.rows[0].hora);
-    } catch (error) {
-        console.error("Error de con", error.message);
-    }
-};
+
+sequelize.sync({ force: true })
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(' Servidor y DB listos');
+    });
+  })
+  .catch((err) => { 
+    console.error('Error de sync:', err);
+  });
 
 
-
-
-pruebaDeCOnexion();
-
-app.listen(PORT);
