@@ -6,7 +6,8 @@ import { Coleccion, ColeccionPublicacion } from './models/Coleccion.js';
 import { Valora } from './models/Valora.js';
 import { Reporte } from './models/Reporte.js';
 import { Mensaje } from './models/Mensaje.js';
-
+import {Etiqueta}  from './models/Etiqueta.js';
+import{Notificacion} from './models/Notificacion.js'
 
 Usuario.hasMany(Publicacion, { foreignKey: 'idusuario_fk' });
 Publicacion.belongsTo(Usuario, { foreignKey: 'idusuario_fk' });
@@ -68,6 +69,28 @@ Usuario.hasMany(Mensaje, { as: 'MensajesRecibidos', foreignKey: 'idusuariorec_fk
 Mensaje.belongsTo(Usuario, { as: 'Emisor', foreignKey: 'idusuarioem_fk' });
 Mensaje.belongsTo(Usuario, { as: 'Receptor', foreignKey: 'idusuariorec_fk' });
 
+
+
+Publicacion.belongsToMany(Etiqueta, { 
+    through: 'publicacion_etiqueta', 
+    foreignKey: 'idpublicacion_fk', 
+    otherKey: 'idetiqueta_fk',
+    timestamps: false 
+});
+
+Etiqueta.belongsToMany(Publicacion, { 
+    through: 'publicacion_etiqueta', 
+    foreignKey: 'idetiqueta_fk', 
+    otherKey: 'idpublicacion_fk',
+    timestamps: false 
+});
+
+Usuario.hasMany(Notificacion, { as: 'NotificacionesRecibidas', foreignKey: 'idusuariorec_fk' });
+Notificacion.belongsTo(Usuario, { as: 'Receptor', foreignKey: 'idusuariorec_fk' });
+
+Usuario.hasMany(Notificacion, { as: 'NotificacionesEnviadas', foreignKey: 'idusuarioem_fk' });
+Notificacion.belongsTo(Usuario, { as: 'Emisor', foreignKey: 'idusuarioem_fk' });
+
 export {
     Usuario,
     Publicacion,
@@ -77,5 +100,7 @@ export {
     ColeccionPublicacion,
     Valora,
     Reporte,
-    Mensaje
+    Mensaje,
+    Etiqueta,
+    Notificacion
 };
