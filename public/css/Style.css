@@ -1,0 +1,206 @@
+/* Estilos Generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-image: linear-gradient(45deg, black, black, rgb(206, 70, 206));
+    border-bottom: 1px solid #dbdbdb;
+    padding: 15px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+#titulo {
+    width: 220px;
+    height: 90px;
+    background-image: url('../img/logoSinFondo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-indent: -9999px;
+    margin: 0 auto;
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.8));
+}
+
+/* --- ESTRUCTURA --- */
+.container-principal {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    background-color: white;
+    border-right: 1px solid #dbdbdb;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 120px; 
+    height: calc(100vh - 120px);
+}
+
+.btn-sidebar {
+    display: flex;
+    align-items: center;
+    background: white;
+    color: #262626;
+    border: 1px solid #dbdbdb;
+    padding: 12px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-sidebar:hover { background-color: #f8f9fa; }
+
+.btn-new-post {
+    background-image: linear-gradient(45deg, #000, #ce46ce);
+    color: white;
+    border: none;
+}
+
+/* --- MURO Y TARJETAS --- */
+#muro-fotos {
+    flex-grow: 1;
+    background-color: #f0f2f5;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.foto-card {
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 550px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    padding: 12px 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* --- NUEVAS ACCIONES (VALORACIÓN 1-5) --- */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fafafa;
+    border-top: 1px solid #eee;
+}
+
+.botones-puntos {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-punto {
+    width: 32px;
+    height: 32px;
+    border-radius: 20%;
+    border: 1px solid #ce46ce;
+    background: white;
+    color: #ce46ce;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-punto:hover {
+    background: #ce46ce;
+    color: white;
+}
+
+.btn-report {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-report:hover { transform: scale(1.2); }
+.show { 
+    display: block !important; 
+}
+
+
+.user-menu {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.menu-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.menu-content a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+/*CARGAR FOTO*/ 
+.nuevaPublicacion {
+    display: none; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo negro transparente */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}.nuevaPublicacion form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+/* Para eliminar el logo de FTZ que aparece solo */
+.cargarfoto {
+    background-image: none ; 
+    border: 2px dashed #ccc;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

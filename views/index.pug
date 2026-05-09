@@ -1,0 +1,39 @@
+extends layout
+
+block head
+  title Fotaza - Muro
+  link(rel="stylesheet", href="/css/Style.css")
+ 
+block main_content
+  div.container-principal
+    
+    //EJEMPLO PAra probar el estilo borrar despues la imagen 
+    main#muro-fotos
+      div.foto-card
+        div.card-header
+          span.username @PatricioOscar
+          span.fecha Hace un momento
+        div.card-img-container
+          img(src="/img/atardecer-montana-al-fondo_853645-1663.avif" alt="Foto de prueba")
+        
+        div.card-body
+          h3.foto-titulo Atardecer en las Sierras
+          div.foto-stats
+            span.rating-actual ⭐ 4.5
+            span (20 votos)
+        
+        div.card-actions
+          div.valoracion-container
+            span.label-votar Votar:
+            div.botones-puntos
+              button.btn-punto(type="button" onclick="votar(1)") 1
+              button.btn-punto(type="button" onclick="votar(2)") 2
+              button.btn-punto(type="button" onclick="votar(3)") 3
+              button.btn-punto(type="button" onclick="votar(4)") 4
+              button.btn-punto(type="button" onclick="votar(5)") 5
+          
+          button.btn-report(title="Reportar esta foto") 🚩
+
+block scripts
+  
+ 

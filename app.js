@@ -21,6 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/registro',(req,res)=>{
   res.render('registro.pug')
 })
+app.get('/index',(req,res)=>{
+  res.render(('index'))
+})
 
 sequelize.sync({ force: true })
   .then(() => {

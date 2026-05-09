@@ -1,0 +1,55 @@
+/* 1. El contenedor ocupa toda la pantalla y centra la tarjeta */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa el alto total de la ventana */
+    background: #1a1a1a; /* O el color oscuro de tu header */
+}
+
+/* 2. La tarjeta blanca donde van los inputs */
+.login-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 400px; /* Para que no se estire demasiado */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+}
+
+/* 3. Estilo rápido para los inputs dentro del login */
+.login-card input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+/* 4. El botón de entrar con degradado */
+.login-card button {
+    background: linear-gradient(135px, #8a2be2, #4b0082);
+    color: white;
+    background-color: #4b0082;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.login-card button:hover {
+    opacity: 0.9;
+    background-color: #911a73;
+}
+.login-card input, 
+.login-card button,
+.login-card a {
+    width: 100%;       
+    box-sizing: border-box; 
+    display: block;
+}
