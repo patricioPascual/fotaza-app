@@ -19,10 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/registro',(req,res)=>{
-  res.render('registro.pug')
+  res.render('registro')
 })
 app.get('/index',(req,res)=>{
   res.render(('index'))
+})
+app.get('/perfil',(rec,res)=>{
+  res.render('perfil')
 })
 
 sequelize.sync({ force: true })

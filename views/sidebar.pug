@@ -1,0 +1,46 @@
+aside.sidebar
+      div.user-menu
+        button.user-btn.btn-sidebar(onclick="toggleMenu()")
+          i 👤
+          span Mi Cuenta
+        div#menu-desplegable.menu-content
+          a(href="/configuracion") ⚙️ Ajustes
+          hr
+          a.logout(href="/logout" style="color: red;") 🚪 Cerrar Sesión
+
+      button.btn-sidebar.btn-new-post(onclick="abrirModal()")
+        i ➕
+        span Nueva Publicación
+
+      div#modal-publicacion.nuevaPublicacion(style="display: none;") 
+        div.cargarfoto 
+          
+        form(action="/publicar" method="POST")
+          label(for="titulo") Titulo de la Publicacion
+          input(type="text" name="titulo" )
+          label(for="etiquetas") Etiquetas #
+          input(type="text" ,name="etiquetas" ,placeholder="playa")
+          
+          button.user.btn(type="submit") Agregar Foto  ➕  
+
+      a.btn-sidebar(href="/FotazaBeta")
+        i 🏠
+        span Inicio / Muro
+      
+      a.btn-sidebar(href="/explorar")
+        i 🧭
+        span Explorar
+      
+      a.btn-sidebar(href="/notificaciones")
+        i 🔔
+        span Notificaciones
+      
+      a.btn-sidebar(href="/FotazaBeta/perfil")
+        i 👤
+        span Mi Perfil
+      
+      
+
+      a.btn-sidebar(href="/colecciones")
+        i 🖼️
+        span Colecciones
