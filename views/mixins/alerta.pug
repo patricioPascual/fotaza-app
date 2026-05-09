@@ -1,0 +1,12 @@
+mixin alert(alert={})
+  if alert && alert.text
+    case alert.status
+      when "error"
+        div.alert.alert-error
+          p= alert.text
+      when "success"
+        div.alert.alert-success
+          p= alert.text
+      default
+        div.alert.alert-info
+          p= alert.text
