@@ -13,14 +13,14 @@ block main_content
     
         each mensaje in alertas
           +alert({ status: "error", text: mensaje })
-      form(action="/registro" method="POST" novalidate)
+      form(action="/auth/registro" method="POST" novalidate)
         div.form-group 
           label(for="nombre") Nombre de Usuario
           input(type="text" id="nombre" name="nombre" required) 
                 
         div.form-group
-          label(for="mail") Correo Electrónico
-          input(name="mail" id="mail" type="email" placeholder="ejemplo@mail.com" required) 
+          label(for="email") Correo Electrónico
+          input(name="email" id="email" type="mail" placeholder="ejemplo@mail.com" required) 
           
         div.form-group
           label(for="password") Contraseña

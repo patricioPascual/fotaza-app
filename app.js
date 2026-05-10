@@ -2,6 +2,8 @@ import express from 'express';
 import sequelize from './db.js'; 
 import './sync.js';
 import 'dotenv/config';
+import usuarioRouter from './routes/usuario.js'
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,9 +26,8 @@ app.get('/registro',(req,res)=>{
 app.get('/index',(req,res)=>{
   res.render(('index'))
 })
-app.get('/perfil',(rec,res)=>{
-  res.render('perfil')
-})
+
+app.use('/auth', usuarioRouter);
 
 sequelize.sync({ force: true })
   .then(() => {
