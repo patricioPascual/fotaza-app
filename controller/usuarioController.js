@@ -23,19 +23,24 @@ export async function registrarUsuario(req, res) {
     try {
         await crearUsuario(nombre, email, password);
         
-        return res.render('registro', {
+        return res.render('login', {
             alert: { status: 'success', text: '¡Usuario creado con exito ! ' }
         });
 
     } catch (error) {
-        console.error('Error al guardar:', error);
-        
+       
+        let errorEmail={} 
         let msjError = "Hubo un problema en el servidor.";
         if (error.name === 'SequelizeUniqueConstraintError') {
-            msjError = "Este correo ya está registrado.";
+            msjError="Este correo ya está registrado."
+            errorEmail= {
+                email:["Este correo ya está registrado."]};
         }
 
         return res.status(500).render('registro', {
+            errores:errorEmail ,
+            datos:{nombre,email},
+
             alert: { status: 'error', text: msjError }
         });
     }
