@@ -1,63 +1,42 @@
-import { validarUsuario, 
-          crearUsuario
-           } from '../models/Usuario.js'; 
+import { crearUsuario } from '../models/Usuario.js';
+import { validarUsuario } from '../helpers/validaciones.js';
 
+export async function registrarUsuario(req, res) {
+    const { nombre, email, password ,password2} = req.body;
+   
+   
+    const validacion = validarUsuario({ nombre, email, password ,password2});
 
- export async function registrarUsuario(req,res){
-       const body=req.body;
-       const{nombre,email,password}=body;
-      console.log("DATOS RECIBIDOS:", { nombre, email, password });
-
-       const validacion= validarUsuario({
-        nombre: nombre,
-        email: email,
-        password:password
-       })
-
-       if(validacion.success === false){
-
+    if (validacion.success === false) {
+    
         const erroresPorCampo = validacion.error.flatten().fieldErrors;
 
-        const nombreError= erroresPorCampo.nombre;
-        const emailError= erroresPorCampo.email;
-        const passwordError= erroresPorCampo.password; 
-        let msj='';
-         if(nombreError){
-            for(const e of nombreError){
-                msj +=' '+ e
-            }
-         } if(emailError){
-            for(const e of emailError){
-                msj +=' '+ e
-            }
-       } if(passwordError){
-            for(const e of passwordError){
-                msj +=' '+ e
-            }
- }                      //todavia no hice hecha registro error
-  res.status(400).render('registro/error', { msj: msj, alert: { status: 'error', text: "No se pudo crear el usuario!" } })
-    return    
-}
-try{
-    const nuevoUsuario={
-        nombre:nombre,
-        email:email,
-        password:password
+       
+        return res.status(400).render('registro', { 
+            errores: erroresPorCampo,
+            datos: { nombre, email },  
+            alert: { status: 'error', text: "Por favor, corrige los errores en el formulario." } 
+        });
     }
 
-    await crearUsuario(nombre,email,password);
-return res.render('registro', {
-        alert: {
-            status: 'success',
-            text: '¡Usuario creado! Ya podés ir al login.'
-        }
-    });
-}catch(error){
-  
-    console.log('Error al guardar');
-    
-    
-    return res.status(500).render('registro');
+   
+    try {
+        await crearUsuario(nombre, email, password);
+        
+        return res.render('registro', {
+            alert: { status: 'success', text: '¡Usuario creado con exito ! ' }
+        });
 
-}
+    } catch (error) {
+        console.error('Error al guardar:', error);
+        
+        let msjError = "Hubo un problema en el servidor.";
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            msjError = "Este correo ya está registrado.";
+        }
+
+        return res.status(500).render('registro', {
+            alert: { status: 'error', text: msjError }
+        });
+    }
 }

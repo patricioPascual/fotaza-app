@@ -1,33 +1,37 @@
-extends layout  
-
-include ./mixins/alerta.pug
 block head
-  title Fotaza - Registro 
-  link(rel="stylesheet", href="/css/Style.css") 
+
+  title Fotaza - Registro
+
+  link(rel="stylesheet", href="/css/Style.css")
+
   link(rel="stylesheet", href="/css/formularios.css")
+
 block main_content  
   div.login-container
     div.login-card
       h2 Registrar Cuenta
-      if alertas
-    
-        each mensaje in alertas
-          +alert({ status: "error", text: mensaje })
+      
+     
       form(action="/auth/registro" method="POST" novalidate)
         div.form-group 
           label(for="nombre") Nombre de Usuario
-          input(type="text" id="nombre" name="nombre" required) 
+          input(type="text" id="nombre" name="nombre" value=datos ? datos.nombre : '')
+          
+          span.error-msg= errores && errores.nombre ? errores.nombre[0] : ''
                 
         div.form-group
           label(for="email") Correo Electrónico
-          input(name="email" id="email" type="mail" placeholder="ejemplo@mail.com" required) 
+          input(name="email" id="email" type="email" value=datos ? datos.email : '' placeholder="ejemplo@mail.com") 
+          span.error-msg= errores && errores.email ? errores.email[0] : ''
           
         div.form-group
           label(for="password") Contraseña
-          input(name="password" id="password" type="password" placeholder="••••••••" required)
+          input(name="password" id="password" type="password" placeholder="••••••••")
+          span.error-msg= errores && errores.password ? errores.password[0] : ''
         
         div.form-group
           label(for="password2") Ingrese nuevamente la Contraseña
-          input(name="passwordConfirm" id="password2" type="password" placeholder="••••••••" required)
+          input(name="password2" id="password2" type="password" placeholder="••••••••")
+          span.error-msg= errores && errores.password2 ? errores.password2[0] : ''
           
         button.btn-login(type="submit") Registrarse
