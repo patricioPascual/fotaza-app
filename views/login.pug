@@ -8,15 +8,15 @@ block main_content
   div.login-container
     div.login-card
       h2 Iniciar Sesión
-      form(action="/auth/login" method="POST")
+      form(action="/auth/login" method="POST" novalidate)
         div.form-group
-          label(for="mail") Correo Electrónico
-          input(name="mail" id="mail" type="email" placeholder="ejemplo@mail.com" required) 
-        
+          label(for="email") Correo Electrónico
+          input(name="email" id="email" type="email" placeholder="ejemplo@mail.com" value=datos ? datos.email : "" required) 
+          span.error-msg= errores && errores.email ? errores.email[0] : ''
         div.form-group
           label(for="password") Contraseña
           input(name="password" id="password" type="password" placeholder="••••••••" required)
-        
+          span.error-msg= errores && errores.password ? errores.password[0] : ''
         button.btn-login(type="submit") Ingresar
       
       div.login-footer

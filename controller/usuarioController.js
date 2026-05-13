@@ -1,5 +1,7 @@
 import { crearUsuario } from '../models/Usuario.js';
 import { validarUsuario } from '../helpers/validaciones.js';
+import { Usuario } from '../models/Usuario.js';
+
 
 export async function registrarUsuario(req, res) {
     const { nombre, email, password ,password2} = req.body;
@@ -43,5 +45,44 @@ export async function registrarUsuario(req, res) {
 
             alert: { status: 'error', text: msjError }
         });
+    }
+}
+
+export async function autenticarUsuario(req,res){
+    const {email,password}=req.body;
+
+    if(!email||!password){
+        return res.render('login',{
+            alert:{status:'error' ,text:"por favor complete los campos "},
+            errores:{email:["el campo es obligatorio"], password:["el campo es obligatorio"]},
+            datos:{email}
+        });
+    }
+    try{
+     const usuario= await Usuario.findOne({where:{email}});
+      
+     if(!usuario){
+        return res.render('login',{
+            alert:{status:'error' ,text:"el usuario no existe"},
+            errores:{email:["el usuario no existe"]},
+            datos:{email}
+        });
+     }
+      if (usuario.password != password ){
+        return res.render('login',{
+            alert:{status:'error' , text:"Contraseña Incorretca"},
+            errores:{password:["Contrseña incorrecta"]},
+            datos:{email}
+        })
+      }
+      res.redirect('/index')
+    }catch(error){
+        console.log('error al ingresar',error)
+
+        return res.render('login', {
+            alert:{status:"error", text:"error n el servidor"},
+            errores:{},
+            datos:{email}
+        })
     }
 }

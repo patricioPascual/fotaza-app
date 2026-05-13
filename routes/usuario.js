@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registrarUsuario } from '../controller/usuarioController.js';
+import { registrarUsuario, autenticarUsuario } from '../controller/usuarioController.js';
 
 const router = Router();
 
@@ -10,5 +10,5 @@ router.get('/registro', (req, res) => {
 
 
 router.post('/registro', registrarUsuario); 
-
+router.post('/login',autenticarUsuario);
 export default router;

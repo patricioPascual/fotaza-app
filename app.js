@@ -32,7 +32,7 @@ app.get('/login',(req,res)=>{
 
 app.use('/auth', usuarioRouter);
 
-sequelize.sync({ force: true })
+sequelize.sync({ alter: true })
   .then(() => {
     app.listen(PORT, () => {
       console.log(' Servidor y DB listos');
