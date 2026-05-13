@@ -30,7 +30,7 @@ app.get('/login',(req,res)=>{
   res.render('login');
 })
 
-app.use('/auth', usuarioRouter);
+app.use('/', usuarioRouter);
 
 sequelize.sync({ alter: true })
   .then(() => {

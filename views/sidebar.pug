@@ -8,11 +8,11 @@ aside.sidebar
           hr
           a.logout(href="/logout" style="color: red;") 🚪 Cerrar Sesión
 
-      button.btn-sidebar.btn-new-post(onclick="abrirModal()")
+      button.btn-sidebar.btn-new-post(onclick="nuevaPublicacion()")
         i ➕
         span Nueva Publicación
 
-      div#modal-publicacion.nuevaPublicacion(style="display: none;") 
+      div#nuevaPublicacion.ventana(style="display: none;") 
         div.cargarfoto 
           
         form(action="/publicar" method="POST")
@@ -23,7 +23,7 @@ aside.sidebar
           
           button.user.btn(type="submit") Agregar Foto  ➕  
 
-      a.btn-sidebar(href="/FotazaBeta")
+      a.btn-sidebar(href="/index")
         i 🏠
         span Inicio / Muro
       
@@ -35,7 +35,7 @@ aside.sidebar
         i 🔔
         span Notificaciones
       
-      a.btn-sidebar(href="/FotazaBeta/perfil")
+      a.btn-sidebar(href="/perfil")
         i 👤
         span Mi Perfil
       

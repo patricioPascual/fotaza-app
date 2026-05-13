@@ -8,7 +8,7 @@ block main_content
   div.login-container
     div.login-card
       h2 Iniciar Sesión
-      form(action="/auth/login" method="POST" novalidate)
+      form(action="/login" method="POST" novalidate)
         div.form-group
           label(for="email") Correo Electrónico
           input(name="email" id="email" type="email" placeholder="ejemplo@mail.com" value=datos ? datos.email : "" required) 
