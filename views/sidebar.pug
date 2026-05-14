@@ -1,46 +1,58 @@
 aside.sidebar
-      div.user-menu
-        button.user-btn.btn-sidebar(onclick="toggleMenu()")
-          i 👤
-          span Mi Cuenta
-        div#menu-desplegable.menu-content
-          a(href="/configuracion") ⚙️ Ajustes
-          hr
-          a.logout(href="/logout" style="color: red;") 🚪 Cerrar Sesión
+  div.user-menu
+    button.user-btn.btn-sidebar(onclick="toggleMenu()")
+      i 👤
+      span Mi Cuenta
+    div#menu-desplegable.menu-content
+      a(href="/configuracion") ⚙️ Ajustes
+      hr
+      a.logout(href="/logout" style="color: red;") 🚪 Cerrar Sesión
 
-      button.btn-sidebar.btn-new-post(onclick="nuevaPublicacion()")
-        i ➕
-        span Nueva Publicación
+  button.btn-sidebar.btn-new-post(onclick="nuevaPublicacion()")
+    i ➕
+    span Nueva Publicación
 
-      div#nuevaPublicacion.ventana(style="display: none;") 
-        div.cargarfoto 
-          
-        form(action="/publicar" method="POST")
-          label(for="titulo") Titulo de la Publicacion
-          input(type="text" name="titulo" )
-          label(for="etiquetas") Etiquetas #
-          input(type="text" ,name="etiquetas" ,placeholder="playa")
-          
-          button.user.btn(type="submit") Agregar Foto  ➕  
+  div#nuevaPublicacion.ventana(style="display: none;") 
+    div.cargarfoto 
+      
+      h2 Nueva Publicación
 
-      a.btn-sidebar(href="/index")
-        i 🏠
-        span Inicio / Muro
-      
-      a.btn-sidebar(href="/explorar")
-        i 🧭
-        span Explorar
-      
-      a.btn-sidebar(href="/notificaciones")
-        i 🔔
-        span Notificaciones
-      
-      a.btn-sidebar(href="/perfil")
-        i 👤
-        span Mi Perfil
-      
-      
+      form(action="/publicar" method="POST")
+        label(for="titulo") Título de la Publicación
+        input(type="text" name="titulo" placeholder="Un título asombroso..." required)
+        
+        label(for="etiquetas") Etiquetas #
+        input(type="text" name="etiquetas" placeholder="playa, amigos, fotaza")
 
-      a.btn-sidebar(href="/colecciones")
-        i 🖼️
-        span Colecciones
+        div#contenedorInputsBase64
+
+        div#previsualizacion(style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;")
+
+        button.btn-sidebar(type="button" onclick="document.getElementById('inputArchivo').click()") 
+          i ➕ 
+          span Agregar Foto
+
+        input(type="file" id="inputArchivo" style="display: none;" accept="image/*" multiple)
+
+        hr
+        button(type="submit") Publicar
+
+  a.btn-sidebar(href="/index")
+    i 🏠
+    span Inicio / Muro
+  
+  a.btn-sidebar(href="/explorar")
+    i 🧭
+    span Explorar
+  
+  a.btn-sidebar(href="/notificaciones")
+    i 🔔
+    span Notificaciones
+  
+  a.btn-sidebar(href="/perfil")
+    i 👤
+    span Mi Perfil
+
+  a.btn-sidebar(href="/colecciones")
+    i 🖼️
+    span Colecciones
