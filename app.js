@@ -23,9 +23,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.get('/registro',(req,res)=>{
   res.render('registro')
 })
-app.get('/index',(req,res)=>{
-  res.render(('index'))
-})
+
 app.get('/login',(req,res)=>{
   res.render('login');
 })

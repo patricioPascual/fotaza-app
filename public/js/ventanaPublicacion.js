@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const reader = new FileReader();
 
                 reader.onload = function(event) {
-                    const base64Data = event.target.result;
+                    const base64Data = reader.result;
 
                     
                     const txtArea = document.createElement('textarea');
