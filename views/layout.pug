@@ -4,7 +4,6 @@ html(lang="es")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     
-    
     block head 
 
   body
@@ -14,15 +13,26 @@ html(lang="es")
         div#titulo
           h1 📸 Fotaza
         
-        
     block header-menu
-
-   
    
     block main_content
    
+    div#modalComentarios.ventana(style="display:none;")
+      div.modal-dos-columnas
+        button.btn-cerrar-modal(onclick="cerrarComentarios()") ✕
+        div.modal-imagen
+          img#imagenModal(src="" alt="foto")
+        div.modal-comentarios
+          h3 Comentarios
+          div#listaComentarios
+            p Cargando...
+          form#formComentario
+            input(type="hidden" id="idfotoModal")
+            textarea(name="texto" placeholder="Escribí tu comentario..." required)
+            button(type="submit") Comentar
    
     script(src="/js/main.js")
     script(src="/js/ventanaPublicacion.js")
+    script(src="/js/comentarios.js")
     
-    block scripts 
+    block scripts

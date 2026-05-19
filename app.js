@@ -4,7 +4,7 @@ import './sync.js';
 import 'dotenv/config';
 import usuarioRouter from './routes/usuario.js'
 import publicacionRouter from './routes/publicacion.js';
-
+import comentarioRoutes from './routes/comentario.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,6 +28,7 @@ app.get('/login',(req,res)=>{
   res.render('login');
 })
 
+app.use('/comentarios', comentarioRoutes);
 app.use('/', usuarioRouter);
 app.use('/',publicacionRouter);
 sequelize.sync({ alter: true })
