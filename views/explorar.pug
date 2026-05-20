@@ -6,21 +6,31 @@ block head
  
 block main_content
   div.container-principal
-    include sidebar
+    include partials/sidebar
     
     main#muro-principal
       div.muro-card
-        form(action="/explorar" method="POST" )
+        form(action="/explorar" method="POST")
           h2 Buscar contenido
           
           div.form-group
             label(for="tipoBusqueda") Buscar por:
-            select(name="tipoBusqueda" id="tipoBusqueda" required )
+            select(name="tipoBusqueda" id="tipoBusqueda" required)
               option(value="usuario") Usuario
               option(value="etiqueta") Etiqueta
           
           div.form-group
             label(for="criterio") Buscar:
-            input(name="criterio" id="criterio" type="text" placeholder="Escribe aquí..." value=datos required )
+            input(name="criterio" id="criterio" type="text" placeholder="Escribe aquí..." value=datos required)
           
           button(type="submit" class="btn-sidebar btn-new-post") Buscar
+
+      if publicaciones
+        div.resultados
+          h2 Resultados de la búsqueda
+          if publicaciones.length > 0
+            
+            each pub in publicaciones
+              include partials/publicaciones
+          else
+            p No se encontraron resultados.

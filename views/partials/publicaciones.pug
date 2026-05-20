@@ -1,0 +1,33 @@
+
+div.foto-card
+  div.card-header
+    span.username= pub.usuario.nombre
+    span.fecha= new Date(pub.createdAt).toLocaleDateString()
+  
+  div.card-img-container
+    if pub.fotos && pub.fotos.length > 0
+      each foto in pub.fotos
+        a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}')` style="cursor:pointer;")
+          img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
+    else
+      img(src="/img/default.jpg" alt="Sin imagen disponible")
+  
+  div.card-body
+    h3.foto-titulo= pub.titulo
+    if pub.etiqueta && pub.etiqueta.length > 0
+      p.foto-etiquetas(style="font-size: 0.9rem; color: #3498db; font-weight: 500;")
+        each tag in pub.etiqueta
+          span(style="margin-right: 8px;") #{'#' + tag.nombre}
+    
+    div.foto-stats
+      span.rating-actual ⭐ 4.5
+      span (20 votos)
+  
+  div.card-actions
+    div.valoracion-container
+      span.label-votar Votar:
+      div.botones-puntos
+        each val in [1, 2, 3, 4, 5]
+          button.btn-punto(type="button" onclick=`votar(${val}, ${pub.idpublicacion})`) #{val}
+    
+    button.btn-report(title="Reportar esta foto") 🚩

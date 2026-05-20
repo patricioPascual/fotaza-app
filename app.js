@@ -6,6 +6,7 @@ import usuarioRouter from './routes/usuario.js'
 import publicacionRouter from './routes/publicacion.js';
 import comentarioRoutes from './routes/comentario.js';
 import explorarRouter from './routes/explorar.js';
+import perfilRoutes from './routes/perfil.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use(express.static('public'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+app.use('/perfil', perfilRoutes);
 app.use('/explorar', explorarRouter);
 app.use('/comentarios', comentarioRoutes);
 app.use('/', usuarioRouter);

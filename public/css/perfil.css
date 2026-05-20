@@ -1,0 +1,44 @@
+
+
+
+.contenedor-foto-perfil {
+    position: relative; 
+    width: 150px;
+    height: 150px;
+    margin: 20px auto; 
+    display: block; 
+}
+
+
+.foto-usuario {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 3px solid #f3f3f3; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+}
+
+
+.btn-camara {
+    position: absolute; 
+    bottom: 5px; 
+    right: 5px;  
+    background-color: #3498db; 
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid white; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    font-size: 1.2rem; 
+    transition: background-color 0.3s; 
+}
+
+.btn-camara:hover {
+    background-color: #2980b9; 
+}

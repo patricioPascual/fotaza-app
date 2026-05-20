@@ -86,7 +86,7 @@ export async function traerPublicacionesByTag(req, res) {
             order: [['createdAt', 'DESC']]
         });
 
-        res.render('index', { publicaciones });
+        res.render('explorar', { publicaciones });
     } catch (error) {
         console.log("Error cargando publicaciones por tag:", error);
         res.status(500).send("Error al cargar el muro");
@@ -109,7 +109,7 @@ export async function traerPublicacionesByUser(req,res) {
                            
         });
        
-        res.render('index', {publicaciones});
+        res.render('explorar', {publicaciones});
        
     }catch(error){
         console.log("error cargando publicaciones",error);
