@@ -69,3 +69,64 @@ export async function traerAllPublicaciones(req,res) {
     }
     
 }
+export async function traerPublicacionesByTag(req, res) {
+    try {
+        const { etiqueta } = req.params; 
+
+        const publicaciones = await Publicacion.findAll({
+            include: [
+                { model: Foto },
+                { model: Usuario },
+                { 
+                    model: Etiqueta,
+                    where: { nombre: etiqueta }
+                     
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.render('index', { publicaciones });
+    } catch (error) {
+        console.log("Error cargando publicaciones por tag:", error);
+        res.status(500).send("Error al cargar el muro");
+    }
+}
+export async function traerPublicacionesByUser(req,res) {
+    try{
+        const {nombreUsuario}=req.params;
+        const publicaciones= await Publicacion.findAll({
+           
+            include:[
+                {model:Foto},
+                {model:Usuario ,
+                    where:{nombre:nombreUsuario}
+                },
+                {model:Etiqueta}
+            ],
+           
+            order:[['createdAt','DESC']]
+                           
+        });
+       
+        res.render('index', {publicaciones});
+       
+    }catch(error){
+        console.log("error cargando publicaciones",error);
+        res.status(500).send("Error al cargar el muro");
+    }
+}
+export async function procesarBusqueda(req, res) {
+    const { tipoBusqueda, criterio } = req.body;
+    
+  
+    if (!criterio || criterio.trim() === "") {
+        return res.redirect('/explorar');
+    }
+
+    if (tipoBusqueda === 'usuario') {
+        res.redirect(`/explorar/usuario/${criterio}`);
+    } else {
+        res.redirect(`/explorar/etiqueta/${criterio}`);
+    }
+}
