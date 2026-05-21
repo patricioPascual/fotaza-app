@@ -13,9 +13,10 @@ div.foto-card
       img(src="/img/default.jpg" alt="Sin imagen disponible")
   
   div.card-body
-    h3.foto-titulo= pub.titulo
+    h3= pub.titulo
+    h4.foto-descripcion=pub.descripcion
     if pub.etiqueta && pub.etiqueta.length > 0
-      p.foto-etiquetas(style="font-size: 0.9rem; color: #3498db; font-weight: 500;")
+      p.foto-etiquetas
         each tag in pub.etiqueta
           span(style="margin-right: 8px;") #{'#' + tag.nombre}
     

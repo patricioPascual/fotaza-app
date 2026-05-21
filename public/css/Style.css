@@ -89,7 +89,14 @@ header {
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
-
+.foto-etiquetas{
+    font-size: 0.9rem; 
+    color: #3498db; 
+    font-weight: 500;
+}
+.foto-descripcion{
+    font-weight: 300;
+}
 .card-header {
     padding: 12px 15px;
     font-weight: bold;
@@ -171,7 +178,7 @@ header {
     font-size: 0.9rem;
 }
 
-/* --- MODALES --- */
+
 .ventana {
     display: none;
     position: fixed;
@@ -227,6 +234,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+   border-right: 2px solid #ccc; 
+    box-sizing: border-box;
 }
 
 .modal-imagen img {
@@ -241,6 +250,7 @@ header {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+   
 }
 
 .modal-comentarios h3 {

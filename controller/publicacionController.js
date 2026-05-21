@@ -6,11 +6,12 @@ import { Etiqueta } from '../models/Etiqueta.js';
 
 export async function crearPublicacion (req, res)  {
     try {
-        const { titulo, etiquetas, imagenesBase64 } = req.body;
+        const { titulo, etiquetas,descripcion, imagenesBase64 } = req.body;
          
         
         const nuevaPub = await Publicacion.create({ 
             titulo,
+            descripcion,
             idusuario_fk: 1 // ID de PRUEBA
         });
          if(etiquetas && etiquetas.trim() !=""){
