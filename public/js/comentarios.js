@@ -1,9 +1,25 @@
-async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos) {
+async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, yaVoto, esMia) {
     document.getElementById('idfotoModal').value = idfoto;
     document.getElementById('modalComentarios').style.display = 'flex';
     document.getElementById('imagenModal').src = `data:image/jpeg;base64,${imagenBase64}`;
     document.getElementById('modalPromedio').textContent = `⭐ ${promedio ? parseFloat(promedio).toFixed(1) : '0'}`;
     document.getElementById('modalVotos').textContent = `(${cantidadVotos || 0} votos)`;
+
+    const seccionVotar = document.getElementById('seccionVotar');
+    const mensajeVoto = document.getElementById('mensajeVoto');
+
+    if (esMia) {
+        seccionVotar.style.display = 'none';
+        mensajeVoto.textContent = 'Es tu foto';
+        mensajeVoto.style.display = 'block';
+    } else if (yaVoto) {
+        seccionVotar.style.display = 'none';
+        mensajeVoto.textContent = '✔ Ya votaste esta foto';
+        mensajeVoto.style.display = 'block';
+    } else {
+        seccionVotar.style.display = 'flex';
+        mensajeVoto.style.display = 'none';
+    }
 
     const lista = document.getElementById('listaComentarios');
     lista.innerHTML = '<p class="comentario-cargando">Cargando...</p>';

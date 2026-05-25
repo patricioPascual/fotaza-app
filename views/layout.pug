@@ -35,13 +35,15 @@ html(lang="es")
             div.modal-promedio
               span#modalPromedio ⭐ 0
               span#modalVotos (0 votos)
-            span Votar:
-            div.botones-puntos
-              button.btn-punto(type="button" onclick="valorar(1)") 1
-              button.btn-punto(type="button" onclick="valorar(2)") 2
-              button.btn-punto(type="button" onclick="valorar(3)") 3
-              button.btn-punto(type="button" onclick="valorar(4)") 4
-              button.btn-punto(type="button" onclick="valorar(5)") 5
+            p#mensajeVoto(style="display:none;")
+            div#seccionVotar(style="display:flex;")  
+             span Votar:
+             div.botones-puntos
+               button.btn-punto(type="button" onclick="valorar(1)") 1
+               button.btn-punto(type="button" onclick="valorar(2)") 2
+               button.btn-punto(type="button" onclick="valorar(3)") 3
+               button.btn-punto(type="button" onclick="valorar(4)") 4
+               button.btn-punto(type="button" onclick="valorar(5)") 5
    
     script(src="/js/main.js")
     script(src="/js/ventanaPublicacion.js")

@@ -3,7 +3,7 @@ import { Publicacion } from '../models/Publicacion.js';
 import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js'
 import { Etiqueta } from '../models/Etiqueta.js';
-import { calcularPromedioPorFoto } from './valoracionController.js';
+import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
 
 
 export async function crearPublicacion (req, res)  {
@@ -14,7 +14,7 @@ export async function crearPublicacion (req, res)  {
         const nuevaPub = await Publicacion.create({ 
             titulo,
             descripcion,
-            idusuario_fk: 1 // ID de PRUEBA
+            idusuario_fk: req.session.idusuario
         });
          if(etiquetas && etiquetas.trim() !=""){
             const listaEtiquetas = etiquetas.split(/[\s,]+/).filter(tag => tag.trim() !== "");
@@ -53,6 +53,8 @@ export async function crearPublicacion (req, res)  {
 
 export async function traerAllPublicaciones(req, res) {
     try {
+        const idusuarioLoggeado = req.session.idusuario;
+
         const publicaciones = await Publicacion.findAll({
             include: [
                 { model: Foto },
@@ -67,6 +69,8 @@ export async function traerAllPublicaciones(req, res) {
                 const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
                 foto.dataValues.promedio = promedio;
                 foto.dataValues.cantidadVotos = cantidadVotos;
+                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
+                foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
             }
         }
 

@@ -6,7 +6,7 @@ import sequelize from '../db.js';
 export async function valorarFoto(req, res) {
     try {
         const { idFoto, puntaje } = req.body; 
-        const idUsuario = 3; 
+        const idUsuario = req.session.idusuario; 
         
         
         const foto = await Foto.findByPk(idFoto);
@@ -47,4 +47,10 @@ export async function calcularPromedioPorFoto(idfoto) {
         promedio: resultado[0].dataValues.promedio,
         cantidadVotos: resultado[0].dataValues.cantidadVotos
     };
+}
+export async function usuarioYaVoto(idfoto, idusuario) {
+    const voto = await Valora.findOne({
+        where: { idfoto_fk: idfoto, idusuario_fk: idusuario }
+    });
+    return voto !== null;
 }
