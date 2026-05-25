@@ -1,4 +1,3 @@
-
 div.foto-card
   div.card-header
     span.username= pub.usuario.nombre
@@ -7,28 +6,18 @@ div.foto-card
   div.card-img-container
     if pub.fotos && pub.fotos.length > 0
       each foto in pub.fotos
-        a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}')` style="cursor:pointer;")
-          img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
+        div.foto-item
+          a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}', ${foto.dataValues.promedio || 0}, ${foto.dataValues.cantidadVotos || 0})` style="cursor:pointer;")
+            img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
+          div.foto-stats
+            span.rating-actual ⭐ #{foto.dataValues.promedio ? parseFloat(foto.dataValues.promedio).toFixed(1) : '0'}
+            span (#{foto.dataValues.cantidadVotos || 0} votos)
     else
       img(src="/img/default.jpg" alt="Sin imagen disponible")
   
   div.card-body
     h3= pub.titulo
-    h4.foto-descripcion=pub.descripcion
     if pub.etiqueta && pub.etiqueta.length > 0
       p.foto-etiquetas
         each tag in pub.etiqueta
           span(style="margin-right: 8px;") #{'#' + tag.nombre}
-    
-    div.foto-stats
-      span.rating-actual ⭐ 4.5
-      span (20 votos)
-  
-  div.card-actions
-    div.valoracion-container
-      span.label-votar Votar:
-      div.botones-puntos
-        each val in [1, 2, 3, 4, 5]
-          button.btn-punto(type="button" onclick=`votar(${val}, ${pub.idpublicacion})`) #{val}
-    
-    button.btn-report(title="Reportar esta foto") 🚩

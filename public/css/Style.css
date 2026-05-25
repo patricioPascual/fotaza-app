@@ -70,7 +70,7 @@ header {
     border: none;
 }
 
-/* --- MURO Y TARJETAS --- */
+/*  MURO Y TARJETAS */
 #muro-fotos {
     flex-grow: 1;
     background-color: #f0f2f5;
@@ -105,7 +105,7 @@ header {
     justify-content: space-between;
 }
 
-/* --- ACCIONES (VALORACIÓN 1-5) --- */
+
 .card-actions {
     display: flex;
     justify-content: space-between;
@@ -212,7 +212,7 @@ header {
     width: 80vw;
     max-width: 900px;
     max-height: 85vh;
-    overflow: hidden;
+    overflow: hidden; 
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 

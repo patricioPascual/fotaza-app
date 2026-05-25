@@ -23,6 +23,7 @@ html(lang="es")
         div.modal-imagen
           img#imagenModal(src="" alt="foto")
         div.modal-comentarios
+          button.btn-report(title="Reportar esta foto") 🚩 Reportar
           h3 Comentarios
           div#listaComentarios
             p Cargando...
@@ -30,10 +31,20 @@ html(lang="es")
             input(type="hidden" id="idfotoModal")
             textarea(name="texto" placeholder="Escribí tu comentario..." required)
             button(type="submit") Comentar
+          div.modal-valoracion
+            div.modal-promedio
+              span#modalPromedio ⭐ 0
+              span#modalVotos (0 votos)
+            span Votar:
+            div.botones-puntos
+              button.btn-punto(type="button" onclick="valorar(1)") 1
+              button.btn-punto(type="button" onclick="valorar(2)") 2
+              button.btn-punto(type="button" onclick="valorar(3)") 3
+              button.btn-punto(type="button" onclick="valorar(4)") 4
+              button.btn-punto(type="button" onclick="valorar(5)") 5
    
     script(src="/js/main.js")
     script(src="/js/ventanaPublicacion.js")
     script(src="/js/comentarios.js")
-    
+    script(src="/js/valoracion.js")
     block scripts
-    

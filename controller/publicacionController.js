@@ -3,6 +3,8 @@ import { Publicacion } from '../models/Publicacion.js';
 import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js'
 import { Etiqueta } from '../models/Etiqueta.js';
+import { calcularPromedioPorFoto } from './valoracionController.js';
+
 
 export async function crearPublicacion (req, res)  {
     try {
@@ -49,27 +51,32 @@ export async function crearPublicacion (req, res)  {
 };
 
 
-export async function traerAllPublicaciones(req,res) {
-    try{
-        const publicaciones= await Publicacion.findAll({
-            include:[
-                {model:Foto},
-                {model:Usuario},
-                {model:Etiqueta}
+export async function traerAllPublicaciones(req, res) {
+    try {
+        const publicaciones = await Publicacion.findAll({
+            include: [
+                { model: Foto },
+                { model: Usuario },
+                { model: Etiqueta }
             ],
-           
-            order:[['createdAt','DESC']]
-                           
+            order: [['createdAt', 'DESC']]
         });
-       
-        res.render('index', {publicaciones});
-       
-    }catch(error){
-        console.log("error cargando publicaciones",error);
+
+        for (const pub of publicaciones) {
+            for (const foto of pub.fotos) {
+                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+                foto.dataValues.promedio = promedio;
+                foto.dataValues.cantidadVotos = cantidadVotos;
+            }
+        }
+
+        res.render('index', { publicaciones });
+    } catch (error) {
+        console.log("error cargando publicaciones", error);
         res.status(500).send("Error al cargar el muro");
     }
-    
 }
+
 export async function traerPublicacionesByTag(req, res) {
     try {
         const { etiqueta } = req.params; 

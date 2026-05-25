@@ -1,7 +1,9 @@
-async function abrirComentarios(idfoto, imagenBase64) {
+async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos) {
     document.getElementById('idfotoModal').value = idfoto;
     document.getElementById('modalComentarios').style.display = 'flex';
     document.getElementById('imagenModal').src = `data:image/jpeg;base64,${imagenBase64}`;
+    document.getElementById('modalPromedio').textContent = `⭐ ${promedio ? parseFloat(promedio).toFixed(1) : '0'}`;
+    document.getElementById('modalVotos').textContent = `(${cantidadVotos || 0} votos)`;
 
     const lista = document.getElementById('listaComentarios');
     lista.innerHTML = '<p class="comentario-cargando">Cargando...</p>';

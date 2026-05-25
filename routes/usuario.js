@@ -11,6 +11,6 @@ router.get('/perfil',(req,res)=>{
     res.render('perfil')
 })
 
-router.post('/registro', registrarUsuario); 
+router.post('auth/registro', registrarUsuario); 
 router.post('/login',autenticarUsuario);
 export default router;
