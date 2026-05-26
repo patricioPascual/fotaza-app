@@ -4,53 +4,62 @@ import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js'
 import { Etiqueta } from '../models/Etiqueta.js';
 import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
+import { aplicarMarcaAgua } from './fotoController.js';
 
-
-export async function crearPublicacion (req, res)  {
+export async function crearPublicacion(req, res) {
     try {
-        const { titulo, etiquetas,descripcion, imagenesBase64 } = req.body;
-         
-        
-        const nuevaPub = await Publicacion.create({ 
+        const { titulo, etiquetas, descripcion, imagenesBase64, copyright, marcaAgua } = req.body;
+
+        const nuevaPub = await Publicacion.create({
             titulo,
             descripcion,
             idusuario_fk: req.session.idusuario
         });
-         if(etiquetas && etiquetas.trim() !=""){
+
+        if (etiquetas && etiquetas.trim() != "") {
             const listaEtiquetas = etiquetas.split(/[\s,]+/).filter(tag => tag.trim() !== "");
-             for(const nombre of listaEtiquetas){
-                const [etiquetaInst]= await Etiqueta.findOrCreate({
-                    where:{nombre: nombre.toLowerCase().trim()}
+            for (const nombre of listaEtiquetas) {
+                const [etiquetaInst] = await Etiqueta.findOrCreate({
+                    where: { nombre: nombre.toLowerCase().trim() }
                 });
                 await nuevaPub.addEtiqueta(etiquetaInst);
-             }
-         }
+            }
+        }
+
         if (imagenesBase64) {
             const arrayImgs = Array.isArray(imagenesBase64) ? imagenesBase64 : [imagenesBase64];
+            const arrayCopyright = Array.isArray(copyright) ? copyright : [copyright];
+            const arrayMarca = Array.isArray(marcaAgua) ? marcaAgua : [marcaAgua];
 
-            for (const imgStr of arrayImgs) {
-                const partes = imgStr.split(';base64,');
+            for (let i = 0; i < arrayImgs.length; i++) {
+                const partes = arrayImgs[i].split(';base64,');
                 const datosPuros = partes[1];
-                const buffer = Buffer.from(datosPuros, 'base64');
+                let buffer = Buffer.from(datosPuros, 'base64');
 
-              
+                const tieneCopyright = arrayCopyright[i] === 'true';
+                const textoMarca = arrayMarca[i] || '';
+
+                if (tieneCopyright && textoMarca.trim() !== '') {
+                    buffer = await aplicarMarcaAgua(buffer, textoMarca);
+                }
+
                 await Foto.create({
                     archivo: buffer,
-                    idpublicacion_fk: nuevaPub.idpublicacion 
+                    idpublicacion_fk: nuevaPub.idpublicacion,
+                    copyright: tieneCopyright,
+                    marcaAgua: tieneCopyright ? textoMarca : null
                 });
             }
         }
 
-        console.log(" Publicacion y fotos guardadas.");
+        console.log("Publicacion y fotos guardadas.");
         res.redirect('/index');
 
     } catch (error) {
         console.error("ERROR AL GUARDAR:", error);
         res.status(500).send("Error al guardar en la base de datos");
     }
-};
-
-
+}
 export async function traerAllPublicaciones(req, res) {
     try {
         const idusuarioLoggeado = req.session.idusuario;
@@ -107,19 +116,7 @@ export async function traerPublicacionesByTag(req, res) {
 export async function traerPublicacionesByUser(req,res) {
     try{
         const {nombreUsuario}=req.params;
-        const publicaciones= await Publicacion.findAll({
-           
-            include:[
-                {model:Foto},
-                {model:Usuario ,
-                    where:{nombre:nombreUsuario}
-                },
-                {model:Etiqueta}
-            ],
-           
-            order:[['createdAt','DESC']]
-                           
-        });
+        const publicaciones= await buscarPublicacionesPorUsuario(nombreUsuario);
        
         res.render('explorar', {publicaciones});
        
@@ -141,4 +138,17 @@ export async function procesarBusqueda(req, res) {
     } else {
         res.redirect(`/explorar/etiqueta/${criterio}`);
     }
+}
+
+//AUXILIAR
+
+export async function buscarPublicacionesPorUsuario(nombreUsuario) {
+    return await Publicacion.findAll({
+        include: [
+            { model: Foto },
+            { model: Usuario, where: { nombre: nombreUsuario } },
+            { model: Etiqueta }
+        ],
+        order: [['createdAt', 'DESC']]
+    });
 }

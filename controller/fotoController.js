@@ -1,5 +1,7 @@
 import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js' 
+import sharp from 'sharp';
+
 
 export async function subirFotoPerfil(req, res) {
     try {
@@ -33,4 +35,27 @@ export async function subirFotoPerfil(req, res) {
         console.error("ERROR AL GUARDAR FOTO:", error);
         res.status(500).send("Error al actualizar la foto de perfil");
     }
+}
+
+export async function aplicarMarcaAgua(buffer, texto) {
+    const imagen = sharp(buffer);
+    const { width, height } = await imagen.metadata();
+
+    const svgMarca = `
+        <svg width="${width}" height="${height}">
+            <text 
+                x="50%" y="90%" 
+                text-anchor="middle" 
+                font-size="${Math.max(20, width * 0.05)}px"
+                font-family="Arial"
+                fill="rgba(255,255,255,0.6)"
+                stroke="rgba(0,0,0,0.4)"
+                stroke-width="1"
+            >${texto}</text>
+        </svg>`;
+
+    return await imagen
+        .composite([{ input: Buffer.from(svgMarca), gravity: 'south' }])
+        .jpeg()
+        .toBuffer();
 }

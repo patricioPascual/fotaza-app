@@ -1,7 +1,7 @@
 import { crearUsuario } from '../models/Usuario.js';
 import { validarUsuario } from '../helpers/validaciones.js';
 import { Usuario } from '../models/Usuario.js';
-
+import { buscarPublicacionesPorUsuario } from './publicacionController.js';
 
 export async function registrarUsuario(req, res) {
     const { nombre, email, password ,password2} = req.body;
@@ -84,5 +84,28 @@ export async function autenticarUsuario(req,res){
             errores:{},
             datos:{email}
         })
+    }
+}
+
+
+export async function verPerfil(req, res) {
+    try {
+        const idUsuario = req.session.idusuario;
+        const usuario = await Usuario.findByPk(idUsuario);
+
+        if (!usuario) {
+            return res.status(404).send("Usuario no encontrado");
+        }
+
+        const usuarioPlano = usuario.toJSON(); 
+        const publicaciones= await buscarPublicacionesPorUsuario(usuarioPlano.nombre)
+        
+        res.render('perfil', { 
+            usuario: usuarioPlano,
+           publicaciones
+        }); 
+    } catch (error) {
+        console.error("Error al cargar perfil:", error);
+        res.status(500).send("Error al cargar perfil");
     }
 }
