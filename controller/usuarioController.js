@@ -2,6 +2,8 @@ import { crearUsuario } from '../models/Usuario.js';
 import { validarUsuario } from '../helpers/validaciones.js';
 import { Usuario } from '../models/Usuario.js';
 import { buscarPublicacionesPorUsuario } from './publicacionController.js';
+import { calcularPromedioPorFoto,usuarioYaVoto } from './valoracionController.js';
+
 
 export async function registrarUsuario(req, res) {
     const { nombre, email, password ,password2} = req.body;
@@ -93,16 +95,24 @@ export async function verPerfil(req, res) {
         const idUsuario = req.session.idusuario;
         const usuario = await Usuario.findByPk(idUsuario);
 
-        if (!usuario) {
-            return res.status(404).send("Usuario no encontrado");
+        if (!usuario) return res.status(404).send("Usuario no encontrado");
+
+        const publicaciones = await buscarPublicacionesPorUsuario(usuario.nombre);
+
+        for (const pub of publicaciones) {
+            for (const foto of pub.fotos) { 
+                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+                
+                foto.dataValues.promedio = promedio;
+                foto.dataValues.cantidadVotos = cantidadVotos;
+                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idUsuario);
+                foto.dataValues.esMia = (pub.idusuario_fk === idUsuario);
+            }
         }
 
-        const usuarioPlano = usuario.toJSON(); 
-        const publicaciones= await buscarPublicacionesPorUsuario(usuarioPlano.nombre)
-        
         res.render('perfil', { 
-            usuario: usuarioPlano,
-           publicaciones
+            usuario: usuario.toJSON(), 
+            publicaciones 
         }); 
     } catch (error) {
         console.error("Error al cargar perfil:", error);

@@ -27,14 +27,14 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
     try {
         const res = await fetch(`/comentarios/${idfoto}`);
         const comentarios = await res.json();
-
+        
         if (comentarios.length === 0) {
             lista.innerHTML = '<p class="comentario-vacio">Sin comentarios aún. ¡Sé el primero!</p>';
         } else {
             let html = '';
             for (const c of comentarios) {
                 html += `<div class="comentario-item">
-                    <strong>${c.Usuario?.nombre || 'Usuario'}</strong>
+                    <strong>${c.usuario?.nombre || 'Usuario'}</strong>
                     <p class="comentario-texto">${c.texto}</p>
                     <small class="comentario-fecha">${new Date(c.createdAt).toLocaleDateString()}</small>
                 </div>`;
