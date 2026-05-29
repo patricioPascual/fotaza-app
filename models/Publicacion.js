@@ -14,11 +14,7 @@ Publicacion.init({
         allowNull: false
     },
     descripcion: DataTypes.TEXT,
-    comentarioserrados: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull:false
-    },
+   
     
 }, { sequelize, modelName: 'publicacion',
      tableName: 'publicacion' ,

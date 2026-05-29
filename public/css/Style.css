@@ -149,7 +149,7 @@ header {
 
 .show { display: block !important; }
 
-/* --- MENU USUARIO --- */
+/*  MENU USUARIO  */
 .user-menu {
     position: relative;
     width: 100%;
@@ -297,7 +297,7 @@ header {
     box-sizing: border-box;
 }
 
-/* --- COMENTARIOS --- */
+/*  COMENTARIOS  */
 .comentario-item {
     padding: 8px 0;
     border-bottom: 1px solid #eee;
@@ -308,3 +308,15 @@ header {
 .comentario-vacio { color: #999; }
 .comentario-error { color: red; }
 .comentario-cargando { color: #666; font-style: italic; }
+
+/* LINK USUARIO PERFIL  */ 
+
+a.username {
+    color: #262626;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.username:hover {
+    text-decoration: underline;
+}

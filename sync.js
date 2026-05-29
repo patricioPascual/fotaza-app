@@ -61,7 +61,12 @@ Usuario.belongsToMany(Usuario, {
     otherKey: 'idseguidor_fk' 
 });
 
-
+Usuario.belongsToMany(Usuario, { 
+    as: 'Seguidos', 
+    through: 'sigue', 
+    foreignKey: 'idseguidor_fk', 
+    otherKey: 'idseguido_fk' 
+});
 
 
 Usuario.hasMany(Mensaje, { as: 'MensajesEnviados', foreignKey: 'idusuarioem_fk' });

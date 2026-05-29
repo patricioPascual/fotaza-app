@@ -1,6 +1,6 @@
 div.foto-card
   div.card-header
-    span.username= pub.usuario.nombre
+    a.username(href=`/perfil/${pub.usuario.nombre}`) #{pub.usuario.nombre}
     span.fecha= new Date(pub.createdAt).toLocaleDateString()
   
   div.card-img-container

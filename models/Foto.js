@@ -14,6 +14,11 @@ Foto.init({
         type: DataTypes.BLOB(),
         allowNull: false
     },
+     comentariosCerrados: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull:false
+    },
     marcaAgua: DataTypes.STRING,
     copyright: {
         type: DataTypes.BOOLEAN,

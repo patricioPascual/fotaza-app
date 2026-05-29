@@ -92,30 +92,86 @@ export async function autenticarUsuario(req,res){
 
 export async function verPerfil(req, res) {
     try {
-        const idUsuario = req.session.idusuario;
-        const usuario = await Usuario.findByPk(idUsuario);
+        const idUsuarioLoggeado = req.session.idusuario;
+        
+       
+        const nombreBuscado = req.params.nombreUsuario || null;
+        
+        let usuario;
+        if (nombreBuscado) {
+            usuario = await Usuario.findOne({ where: { nombre: nombreBuscado } });
+        } else {
+            usuario = await Usuario.findByPk(idUsuarioLoggeado);
+        }
 
         if (!usuario) return res.status(404).send("Usuario no encontrado");
+
+       
+        const seguidores = await usuario.getSeguidores();
+        const seguidos = await usuario.getSeguidos();
+
+      
+        const yaSigue = seguidores.some(s => s.idusuario === idUsuarioLoggeado);
+
+       
+        const esMiPerfil = usuario.idusuario === idUsuarioLoggeado;
 
         const publicaciones = await buscarPublicacionesPorUsuario(usuario.nombre);
 
         for (const pub of publicaciones) {
-            for (const foto of pub.fotos) { 
+            for (const foto of pub.fotos) {
                 const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
-                
                 foto.dataValues.promedio = promedio;
                 foto.dataValues.cantidadVotos = cantidadVotos;
-                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idUsuario);
-                foto.dataValues.esMia = (pub.idusuario_fk === idUsuario);
+                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idUsuarioLoggeado);
+                foto.dataValues.esMia = pub.idusuario_fk === idUsuarioLoggeado;
             }
         }
 
-        res.render('perfil', { 
-            usuario: usuario.toJSON(), 
-            publicaciones 
-        }); 
+        res.render('perfil', {
+            usuario: usuario.toJSON(),
+            publicaciones,
+            seguidores: seguidores.length,
+            seguidos: seguidos.length,
+            esMiPerfil,
+            yaSigue
+        });
     } catch (error) {
         console.error("Error al cargar perfil:", error);
         res.status(500).send("Error al cargar perfil");
     }
 }
+
+
+//SEGTUIMIENTO
+
+export async function seguirUsuario(req, res) {
+    try {
+        const idSeguidor = req.session.idusuario;
+        const { nombreUsuario } = req.params;
+
+        const usuarioASeguir = await Usuario.findOne({ where: { nombre: nombreUsuario } });
+        if (!usuarioASeguir) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        await usuarioASeguir.addSeguidores(idSeguidor);
+        res.json({ ok: true, accion: 'siguiendo' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export async function dejarDeSeguir(req, res) {
+    try {
+        const idSeguidor = req.session.idusuario;
+        const { nombreUsuario } = req.params;
+
+        const usuarioASeguir = await Usuario.findOne({ where: { nombre: nombreUsuario } });
+        if (!usuarioASeguir) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        await usuarioASeguir.removeSeguidores(idSeguidor);
+        res.json({ ok: true, accion: 'dejando de seguir' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+

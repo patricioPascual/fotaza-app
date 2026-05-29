@@ -24,6 +24,8 @@ html(lang="es")
           img#imagenModal(src="" alt="foto")
         div.modal-comentarios
           button.btn-report(title="Reportar esta foto") 🚩 Reportar
+          button#btnCerrarComentarios.btn-sidebar(style="display:none;" onclick="cerrarComentariosModal()") 🔒 Cerrar comentarios
+          p#comentariosCerradosMsg(style="display:none; color:#999;") 🔒 Los comentarios están cerrados.
           h3 Comentarios
           div#listaComentarios
             p Cargando...

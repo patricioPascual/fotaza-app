@@ -1,16 +1,22 @@
 import {Comentario} from '../models/Comentario.js'
 import { Usuario } from '../models/Usuario.js'
-
+import { Foto } from '../models/Foto.js';
 export async function crearComentario(req, res) {
     try {
         const { texto, idfoto_fk } = req.body;
         if (!texto || texto.trim() === '') {
             return res.status(400).json({ error: 'El contenido no puede estar vacío' });
         }
+        const foto = await Foto.findByPk(idfoto_fk);
+        if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
+
+        if (foto.comentariosCerrados) {
+            return res.status(403).json({ error: 'Los comentarios están cerrados.' });
+        }
         await Comentario.create({
             texto: texto.trim(),
             idfoto_fk: idfoto_fk,
-            idusuario_fk: 1
+            idusuario_fk: req.session.idusuario
         });
         res.json({ ok: true });
     } catch (error) {

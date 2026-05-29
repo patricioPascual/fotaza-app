@@ -33,4 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.readAsDataURL(archivo);
         });
     }
-});
+}); 
+
+async function toggleSeguir(nombreUsuario) {
+    const btn = document.getElementById('btnSeguir');
+    const yaSigue = btn.textContent.trim() === 'Dejar de seguir';
+    const ruta = yaSigue ? 'dejarSeguir' : 'seguir';
+
+    try {
+        const res = await fetch(`/perfil/${nombreUsuario}/${ruta}`, { method: 'POST' });
+        const data = await res.json();
+
+        if (data.ok) {
+            btn.textContent = yaSigue ? 'Seguir' : 'Dejar de seguir';
+        }
+    } catch (e) {
+        alert('Error al procesar la solicitud.');
+    }
+}

@@ -21,13 +21,37 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
         mensajeVoto.style.display = 'none';
     }
 
+    const formComentario = document.getElementById('formComentario');
+    const btnCerrar = document.getElementById('btnCerrarComentarios');
+    const msgCerrado = document.getElementById('comentariosCerradosMsg');
+
+    
+    const estadoRes = await fetch(`/fotos/${idfoto}/estado`);
+    const { comentariosCerrados } = await estadoRes.json();
+
+    if (comentariosCerrados) {
+        formComentario.style.display = 'none';
+        msgCerrado.style.display = 'block';
+        btnCerrar.style.display = 'block';
+        btnCerrar.textContent = '🔓 Abrir comentarios';
+    } else if (esMia) {
+        formComentario.style.display = 'flex';
+        msgCerrado.style.display = 'none';
+        btnCerrar.style.display = 'block';
+        btnCerrar.textContent = '🔒 Cerrar comentarios';
+    } else {
+        formComentario.style.display = 'flex';
+        msgCerrado.style.display = 'none';
+        btnCerrar.style.display = 'none';
+    }
+
     const lista = document.getElementById('listaComentarios');
     lista.innerHTML = '<p class="comentario-cargando">Cargando...</p>';
 
     try {
         const res = await fetch(`/comentarios/${idfoto}`);
         const comentarios = await res.json();
-        
+
         if (comentarios.length === 0) {
             lista.innerHTML = '<p class="comentario-vacio">Sin comentarios aún. ¡Sé el primero!</p>';
         } else {
@@ -67,3 +91,32 @@ document.getElementById('formComentario').addEventListener('submit', async funct
         alert('Error al enviar el comentario.');
     }
 });
+
+async function cerrarComentariosModal() {
+    const id = document.getElementById('idfotoModal').value;
+    const btn = document.getElementById('btnCerrarComentarios');
+    const cerrar = btn.textContent.includes('Cerrar');
+    const ruta = cerrar ? 'cerrarComentarios' : 'abrirComentarios';
+
+    try {
+        const res = await fetch(`/fotos/${id}/${ruta}`, { method: 'POST' });
+        const data = await res.json();
+
+        if (data.ok) {
+            const formComentario = document.getElementById('formComentario');
+            const msgCerrado = document.getElementById('comentariosCerradosMsg');
+
+            if (cerrar) {
+                formComentario.style.display = 'none';
+                msgCerrado.style.display = 'block';
+                btn.textContent = '🔓 Abrir comentarios';
+            } else {
+                formComentario.style.display = 'flex';
+                msgCerrado.style.display = 'none';
+                btn.textContent = '🔒 Cerrar comentarios';
+            }
+        }
+    } catch (e) {
+        alert('Error al procesar.');
+    }
+}

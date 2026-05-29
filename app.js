@@ -8,6 +8,8 @@ import comentarioRoutes from './routes/comentario.js';
 import explorarRouter from './routes/explorar.js';
 import perfilRoutes from './routes/perfil.js'
 import valoracionRouter from './routes/valoracion.js'
+import fotoRouter from './routes/foto.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,7 +30,7 @@ app.use((req, res, next) => {
 
 
 
-
+app.use('/fotos', fotoRouter);
 app.use('/', valoracionRouter);
 app.use('/perfil', perfilRoutes);
 app.use('/explorar', explorarRouter);

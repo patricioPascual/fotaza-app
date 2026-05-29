@@ -1,5 +1,6 @@
 import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js' 
+import { Publicacion } from '../models/Publicacion.js';
 import sharp from 'sharp';
 
 
@@ -58,4 +59,62 @@ export async function aplicarMarcaAgua(buffer, texto) {
         .composite([{ input: Buffer.from(svgMarca), gravity: 'south' }])
         .jpeg()
         .toBuffer();
+}
+
+export async function cerrarComentarios(req, res) {
+    try {
+        const { idfoto } = req.params;
+        const idUsuarioLoggeado = req.session.idusuario;
+
+        const foto = await Foto.findByPk(idfoto, {
+            include: [{ model: Publicacion }]
+        });
+
+        if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
+
+        if (foto.publicacion.idusuario_fk !== idUsuarioLoggeado) {
+            return res.status(403).json({ error: 'No tenés permiso para hacer esto.' });
+        }
+
+        await foto.update({ comentariosCerrados: true });
+        res.json({ ok: true });
+        console.log("comentarios cerrados");
+    } catch (error) {
+        console.log("error al cerrar comentarios")
+        res.status(500).json({ error: error.message });
+    }
+}
+export async function abrirComentarios(req, res) {
+    try {
+        const { idfoto } = req.params;
+        const idUsuarioLoggeado = req.session.idusuario;
+
+        const foto = await Foto.findByPk(idfoto, {
+            include: [{ model: Publicacion }]
+        });
+
+        if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
+
+        if (foto.publicacion.idusuario_fk !== idUsuarioLoggeado) {
+            return res.status(403).json({ error: 'No tenés permiso.' });
+        }
+
+        await foto.update({ comentariosCerrados: false });
+        res.json({ ok: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export async function getEstadoFoto(req, res) {
+    try {
+        const { idfoto } = req.params;
+        const foto = await Foto.findByPk(idfoto, {
+            attributes: ['comentariosCerrados']
+        });
+        if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
+        res.json({ comentariosCerrados: foto.comentariosCerrados });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }

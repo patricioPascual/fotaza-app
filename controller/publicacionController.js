@@ -80,6 +80,7 @@ export async function traerAllPublicaciones(req, res) {
                 foto.dataValues.cantidadVotos = cantidadVotos;
                 foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
                 foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
+                
             }
         }
 

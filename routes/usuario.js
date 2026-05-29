@@ -7,9 +7,7 @@ const router = Router();
 router.get('/registro', (req, res) => {
     res.render('registro'); 
 });
-router.get('/perfil',(req,res)=>{
-    res.render('perfil')
-})
+
 
 router.post('auth/registro', registrarUsuario); 
 router.post('/login',autenticarUsuario);
