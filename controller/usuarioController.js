@@ -50,44 +50,59 @@ export async function registrarUsuario(req, res) {
     }
 }
 
-export async function autenticarUsuario(req,res){
-    const {email,password}=req.body;
+export async function autenticarUsuario(req, res) {
+    const { email, password } = req.body;
 
-    if(!email||!password){
-        return res.render('login',{
-            alert:{status:'error' ,text:"por favor complete los campos "},
-            errores:{email:["el campo es obligatorio"], password:["el campo es obligatorio"]},
-            datos:{email}
+    if (!email || !password) {
+        return res.render('login', {
+            alert: { status: 'error', text: "Por favor complete los campos" },
+            errores: { email: ["el campo es obligatorio"], password: ["el campo es obligatorio"] },
+            datos: { email }
         });
     }
-    try{
-     const usuario= await Usuario.findOne({where:{email}});
-      
-     if(!usuario){
-        return res.render('login',{
-            alert:{status:'error' ,text:"el usuario no existe"},
-            errores:{email:["el usuario no existe"]},
-            datos:{email}
-        });
-     }
-      if (usuario.password != password ){
-        return res.render('login',{
-            alert:{status:'error' , text:"Contraseña Incorretca"},
-            errores:{password:["Contrseña incorrecta"]},
-            datos:{email}
-        })
-      }
-      res.redirect('/index')
-    }catch(error){
-        console.log('error al ingresar',error)
 
+    try {
+        const usuario = await Usuario.findOne({ where: { email } });
+
+        if (!usuario) {
+            return res.render('login', {
+                alert: { status: 'error', text: "El usuario no existe" },
+                errores: { email: ["el usuario no existe"] },
+                datos: { email }
+            });
+        }
+
+        const passwordValida = await usuario.verificarPassword(password);
+
+        if (!passwordValida) {
+            return res.render('login', {
+                alert: { status: 'error', text: "Contraseña incorrecta" },
+                errores: { password: ["Contraseña incorrecta"] },
+                datos: { email }
+            });
+        }
+
+        
+        req.session.idusuario = usuario.idusuario;
+        req.session.nombre = usuario.nombre;
+
+        res.redirect('/index');
+    } catch (error) {
+        console.log('error al ingresar', error);
         return res.render('login', {
-            alert:{status:"error", text:"error n el servidor"},
-            errores:{},
-            datos:{email}
-        })
+            alert: { status: "error", text: "Error en el servidor" },
+            errores: {},
+            datos: { email }
+        });
     }
 }
+
+
+export function logout(req, res) {
+    req.session.destroy();
+    res.redirect('/login');
+}
+
 
 
 export async function verPerfil(req, res) {

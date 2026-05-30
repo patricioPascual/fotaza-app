@@ -1,9 +1,14 @@
 import {Model,DataTypes} from 'sequelize' 
 import sequelize from '../db.js'  
+import bcrypt from 'bcrypt';
 
 
+export class Usuario extends Model{
+   async verificarPassword(password) {
+        return await bcrypt.compare(password, this.password);
+    }
+}
 
-export class Usuario extends Model{}
 
 Usuario.init(
   {
@@ -50,6 +55,14 @@ Usuario.init(
     freezeTableName: true,
     timestamps: true,  
     paranoid: true,    
+    hooks: {
+            beforeSave: async (usuario) => {
+                if (!usuario.password) return;
+                if (!usuario.changed('password')) return;
+                const salt = await bcrypt.genSalt(10);
+                usuario.password = await bcrypt.hash(usuario.password, salt);
+            }
+        }
   }
 );
 

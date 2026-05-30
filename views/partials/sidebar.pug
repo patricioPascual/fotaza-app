@@ -2,7 +2,7 @@ aside.sidebar
   div.user-menu
     button.user-btn.btn-sidebar(onclick="toggleMenu()")
       i 👤
-      span Mi Cuenta
+      span= usuarioLoggeado || "Mi Cuenta"
     div#menu-desplegable.menu-content
       a(href="/configuracion") ⚙️ Ajustes
       hr
