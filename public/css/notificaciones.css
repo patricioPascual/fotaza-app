@@ -1,0 +1,39 @@
+.notif-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notif-contenido {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.notif-link {
+    color: #ce46ce;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.notif-link:hover { text-decoration: underline; }
+
+.notif-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.badge-nuevo {
+    background: #ce46ce;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+}

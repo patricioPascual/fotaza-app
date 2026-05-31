@@ -1,0 +1,37 @@
+extends layout
+
+block head
+  title Fotaza - Notificaciones
+  link(rel="stylesheet", href="/css/Style.css")
+  link(rel="stylesheet", href="/css/notificaciones.css")
+block main_content
+  div.container-principal
+    include partials/sidebar
+
+    main#muro-principal
+      h2 Notificaciones
+
+      if notificaciones && notificaciones.length > 0
+        each notif in notificaciones
+          div.notif-item
+            div.notif-contenido
+              a.notif-link(href=`/perfil/${notif.Emisor.nombre}`)
+                strong= notif.Emisor.nombre
+              case notif.tipo
+                when 'interes'
+                  span  está interesado en tu foto
+                  a.notif-link(href=`/mensajes/${notif.Emisor.nombre}`) Enviar mensaje
+                when 'comentario'
+                  span  comentó tu foto
+                  a.notif-link(href=`/index#foto-${notif.idreferencia}`) 🖼️ Ver foto
+                when 'valoracion'
+                  span  valoró tu foto
+                  a.notif-link(href=`/index#foto-${notif.idreferencia}`) 🖼️ Ver foto
+                when 'seguimiento'
+                  span  te está siguiendo
+            div.notif-meta
+              small.comentario-fecha= new Date(notif.createdAt).toLocaleDateString()
+              if !notif.leido
+                span.badge-nuevo Nuevo
+      else
+        p.comentario-vacio No tenés notificaciones.

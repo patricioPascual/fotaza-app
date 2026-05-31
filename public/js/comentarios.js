@@ -7,25 +7,28 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
 
     const seccionVotar = document.getElementById('seccionVotar');
     const mensajeVoto = document.getElementById('mensajeVoto');
+    const btnInteres = document.getElementById('btnInteres');
 
     if (esMia) {
         seccionVotar.style.display = 'none';
         mensajeVoto.textContent = 'Es tu foto';
         mensajeVoto.style.display = 'block';
+        btnInteres.style.display = 'none';
     } else if (yaVoto) {
         seccionVotar.style.display = 'none';
         mensajeVoto.textContent = '✔ Ya votaste esta foto';
         mensajeVoto.style.display = 'block';
+        btnInteres.style.display = 'block';
     } else {
         seccionVotar.style.display = 'flex';
         mensajeVoto.style.display = 'none';
+        btnInteres.style.display = 'block';
     }
 
     const formComentario = document.getElementById('formComentario');
     const btnCerrar = document.getElementById('btnCerrarComentarios');
     const msgCerrado = document.getElementById('comentariosCerradosMsg');
 
-    
     const estadoRes = await fetch(`/fotos/${idfoto}/estado`);
     const { comentariosCerrados } = await estadoRes.json();
 

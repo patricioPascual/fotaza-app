@@ -1,5 +1,7 @@
 import { Foto } from "../models/Foto.js";
 import { Valora } from "../models/Valora.js";
+import { crearNotificacion } from './notificacionController.js';
+import { Publicacion } from "../models/Publicacion.js";
 import sequelize from '../db.js';
 
 
@@ -9,7 +11,9 @@ export async function valorarFoto(req, res) {
         const idUsuario = req.session.idusuario; 
         
         
-        const foto = await Foto.findByPk(idFoto);
+         const foto = await Foto.findByPk(idFoto, {
+            include: [{ model: Publicacion }]
+        });
         if (!foto) return res.status(404).json({ message: "La foto no existe." });
 
         
@@ -27,7 +31,13 @@ export async function valorarFoto(req, res) {
             idfoto_fk: idFoto, 
             puntaje 
         });
-        
+        await crearNotificacion(
+            'valoracion',
+            idUsuario,
+            foto.publicacion.idusuario_fk,
+            idFoto
+        );
+
         res.status(200).json({ message: "Valoración registrada con éxito." });
     } catch (error) {
         console.error("ERROR:", error);

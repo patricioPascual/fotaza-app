@@ -10,7 +10,7 @@ Notificacion.init({
         autoIncrement: true
     },
     tipo: {
-        type: DataTypes.ENUM('seguimiento', 'valoracion', 'comentario', 'mensaje', 'reporte'),
+        type: DataTypes.ENUM('seguimiento', 'valoracion', 'comentario', 'mensaje', 'reporte','interes'),
         allowNull: false
     },
     leido: {

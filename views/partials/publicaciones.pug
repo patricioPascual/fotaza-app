@@ -6,7 +6,7 @@ div.foto-card
   div.card-img-container
     if pub.fotos && pub.fotos.length > 0
       each foto in pub.fotos
-        div.foto-item
+        div.foto-item(id=`foto-${foto.idfoto}`)
           a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}', ${foto.dataValues.promedio || 0}, ${foto.dataValues.cantidadVotos || 0}, ${foto.dataValues.yaVoto}, ${foto.dataValues.esMia})` style="cursor:pointer;")
             img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
           div.foto-stats

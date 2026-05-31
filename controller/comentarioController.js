@@ -1,13 +1,18 @@
 import {Comentario} from '../models/Comentario.js'
 import { Usuario } from '../models/Usuario.js'
 import { Foto } from '../models/Foto.js';
+import { crearNotificacion } from './notificacionController.js';
+import { Publicacion } from '../models/Publicacion.js';
+
 export async function crearComentario(req, res) {
     try {
         const { texto, idfoto_fk } = req.body;
         if (!texto || texto.trim() === '') {
             return res.status(400).json({ error: 'El contenido no puede estar vacío' });
         }
-        const foto = await Foto.findByPk(idfoto_fk);
+        const foto = await Foto.findByPk(idfoto_fk, {
+            include: [{ model: Publicacion }]
+        });
         if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
 
         if (foto.comentariosCerrados) {
@@ -18,6 +23,13 @@ export async function crearComentario(req, res) {
             idfoto_fk: idfoto_fk,
             idusuario_fk: req.session.idusuario
         });
+         await crearNotificacion(
+            'comentario',
+            req.session.idusuario,
+            foto.publicacion.idusuario_fk,
+            idfoto_fk
+        );
+
         res.json({ ok: true });
     } catch (error) {
         console.error('Error al crear el comentario:', error);

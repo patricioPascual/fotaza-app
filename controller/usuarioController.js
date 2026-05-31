@@ -3,6 +3,7 @@ import { validarUsuario } from '../helpers/validaciones.js';
 import { Usuario } from '../models/Usuario.js';
 import { buscarPublicacionesPorUsuario } from './publicacionController.js';
 import { calcularPromedioPorFoto,usuarioYaVoto } from './valoracionController.js';
+import { crearNotificacion } from './notificacionController.js';
 
 
 export async function registrarUsuario(req, res) {
@@ -169,6 +170,15 @@ export async function seguirUsuario(req, res) {
         if (!usuarioASeguir) return res.status(404).json({ error: 'Usuario no encontrado' });
 
         await usuarioASeguir.addSeguidores(idSeguidor);
+
+        
+        await crearNotificacion(
+            'seguimiento',
+            idSeguidor,
+            usuarioASeguir.idusuario,
+            idSeguidor
+        );
+
         res.json({ ok: true, accion: 'siguiendo' });
     } catch (error) {
         res.status(500).json({ error: error.message });

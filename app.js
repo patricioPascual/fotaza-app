@@ -11,6 +11,7 @@ import perfilRoutes from './routes/perfil.js';
 import valoracionRouter from './routes/valoracion.js';
 import fotoRouter from './routes/foto.js';
 import { requireAuth } from './middlewares/auth.js';
+import notificacionRouter from './routes/notificacion.js';
 
 
 const app = express();
@@ -51,6 +52,7 @@ app.use('/perfil', requireAuth, perfilRoutes);
 app.use('/explorar', requireAuth, explorarRouter);
 app.use('/comentarios', requireAuth, comentarioRoutes);
 app.use('/', requireAuth, publicacionRouter);
+app.use('/notificaciones', requireAuth, notificacionRouter);
 
 
 
