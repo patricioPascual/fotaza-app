@@ -9,7 +9,19 @@ Reporte.init({
         primaryKey: true,
         autoIncrement: true
     },
+    tipo: {
+        type: DataTypes.ENUM('foto', 'comentario'),
+        allowNull: false
+    },
+    idreferencia: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     motivo: {
+        type: DataTypes.STRING, 
+        allowNull: false
+    },
+    descripcion: {
         type: DataTypes.TEXT,
         allowNull: false
     },

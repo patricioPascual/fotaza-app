@@ -1,4 +1,6 @@
 import * as z from 'zod';
+import { Foto } from '../models/Foto.js';
+import { Comentario } from '../models/Comentario.js';
 //validacion  
 
 const USER = z.object({
@@ -23,4 +25,17 @@ const USER = z.object({
 // Función para usar el esquema
  export function validarUsuario(usuario) {  
   return USER.safeParse(usuario);
+}
+
+export async function validarReferencia(tipo, id) {
+    
+    const modelos = { 
+        foto: Foto, 
+        comentario: Comentario 
+    };
+
+    const Modelo = modelos[tipo];
+    if (!Modelo) return null; 
+
+    return await Modelo.findByPk(id); // Retorna el objeto o null
 }

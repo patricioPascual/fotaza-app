@@ -1,4 +1,13 @@
+let fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia;
+
 async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, yaVoto, esMia) {
+     fotoId = idfoto;
+    fotoImg = imagenBase64;
+    fotoPromedio = promedio;
+    fotoVotos = cantidadVotos;
+    fotoYaVoto = yaVoto;
+    fotoEsMia = esMia;
+    
     document.getElementById('idfotoModal').value = idfoto;
     document.getElementById('modalComentarios').style.display = 'flex';
     document.getElementById('imagenModal').src = `data:image/jpeg;base64,${imagenBase64}`;
@@ -60,10 +69,13 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
         } else {
             let html = '';
             for (const c of comentarios) {
+                const btnReporte = `<button class="btn-report-comentario" 
+                      onclick="abrirReporte('comentario', ${c.idcomentario})">🚩 Reportar</button>`;
                 html += `<div class="comentario-item">
                     <strong>${c.usuario?.nombre || 'Usuario'}</strong>
                     <p class="comentario-texto">${c.texto}</p>
                     <small class="comentario-fecha">${new Date(c.createdAt).toLocaleDateString()}</small>
+                    ${btnReporte}
                 </div>`;
             }
             lista.innerHTML = html;
@@ -73,7 +85,7 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
     }
 }
 
-function cerrarComentarios() {
+function cerrarVentana() {
     document.getElementById('modalComentarios').style.display = 'none';
 }
 
@@ -89,7 +101,7 @@ document.getElementById('formComentario').addEventListener('submit', async funct
             body: JSON.stringify({ texto, idfoto_fk: id })
         });
         this.querySelector('textarea').value = '';
-        abrirComentarios(id);
+        abrirComentarios(fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia);
     } catch (e) {
         alert('Error al enviar el comentario.');
     }
@@ -123,3 +135,46 @@ async function cerrarComentariosModal() {
         alert('Error al procesar.');
     }
 }
+
+
+//REPORTE
+
+// Abrir el modal de reporte (pasando el tipo y el id)
+function abrirReporte(tipo, idreferencia) {
+    document.getElementById('reporteTipo').value = tipo;
+    document.getElementById('reporteIdReferencia').value = idreferencia;
+    document.getElementById('modalReporte').style.display = 'flex';
+}
+
+function cerrarReporte() {
+    document.getElementById('modalReporte').style.display = 'none';
+}
+
+// Enviar el formulario del modal de reporte
+document.getElementById('formReporte').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+        tipo: document.getElementById('reporteTipo').value,
+        idreferencia: document.getElementById('reporteIdReferencia').value,
+        motivo: document.getElementById('motivo').value,
+        descripcion: document.getElementById('descripcion').value
+    };
+
+    try {
+        const res = await fetch('/reportes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+            alert("Denuncia enviada correctamente.");
+            cerrarReporte();
+        } else {
+            alert("Error al enviar la denuncia.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión.");
+    }
+});

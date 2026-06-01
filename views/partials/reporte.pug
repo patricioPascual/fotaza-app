@@ -1,0 +1,21 @@
+
+div#modalReporte.ventana(style="display:none;")
+  div.modal-reporte-contenido
+    h2 Reportar contenido
+    form#formReporte
+      input(type="hidden" id="reporteTipo")
+      input(type="hidden" id="reporteIdReferencia")
+      
+      label(for="motivo") Motivo:
+      select#motivo(name="motivo" required)
+        option(value="inapropiado") Contenido inapropiado
+        option(value="spam") Spam
+        option(value="acoso") Acoso
+        option(value="otro") Otro
+      
+      label(for="descripcion") Descripción/Justificación:
+      textarea#descripcion(name="descripcion" required placeholder="Explica el motivo...")
+      
+      div.botones-modal
+        button(type="submit") Enviar Reporte
+        button(type="button" onclick="cerrarReporte()") Cancelar
