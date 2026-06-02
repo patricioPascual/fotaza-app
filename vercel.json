@@ -1,12 +1,16 @@
 {
   "version": 2,
+  "github": {
+    "silent": false,
+    "deploymentBranches": ["Prod"]
+  },
   "builds": [
     {
       "src": "app.js",
       "use": "@vercel/node",
-      "config" : {
-    "includeFiles": ["views/**", "public/**"]
-}
+      "config": {
+        "includeFiles": ["views/**", "public/**"]
+      }
     }
   ],
   "routes": [
