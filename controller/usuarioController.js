@@ -86,8 +86,20 @@ export async function autenticarUsuario(req, res) {
         
         req.session.idusuario = usuario.idusuario;
         req.session.nombre = usuario.nombre;
-
-        res.redirect('/index');
+        
+        req.session.save((err) => {
+            if (err) {
+                console.error('Error al guardar la sesión en el login:', err);
+                return res.render('login', {
+                    alert: { status: "error", text: "Error al iniciar sesión" },
+                    errores: {},
+                    datos: { email }
+                });
+            }
+            
+            res.redirect('/index');
+        });
+        
     } catch (error) {
         console.log('error al ingresar', error);
         return res.render('login', {
