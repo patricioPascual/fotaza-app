@@ -13,7 +13,6 @@ import fotoRouter from './routes/foto.js';
 import { requireAuth } from './middlewares/auth.js';
 import notificacionRouter from './routes/notificacion.js';
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -37,26 +36,27 @@ app.use(session({
     }
 }));
 
-
 app.use((req, res, next) => {
-    res.locals.usuarioLoggeado = req.session.nombre || null;
+    if (req.session) {
+        res.locals.usuarioLoggeado = req.session.nombre || null;
+    } else {
+        res.locals.usuarioLoggeado = null;
+    }
     next();
 });
 
 app.get('/registro', (req, res) => res.render('registro'));
 app.get('/login', (req, res) => res.render('login'));
+
 app.use('/', usuarioRouter);
 
 app.use('/fotos', requireAuth, fotoRouter);
-app.use('/', requireAuth, valoracionRouter);
 app.use('/perfil', requireAuth, perfilRoutes);
 app.use('/explorar', requireAuth, explorarRouter);
 app.use('/comentarios', requireAuth, comentarioRoutes);
-app.use('/', requireAuth, publicacionRouter);
 app.use('/notificaciones', requireAuth, notificacionRouter);
-
-
-
+app.use('/', requireAuth, publicacionRouter);
+app.use('/', requireAuth, valoracionRouter);
 
 sequelize.sync({ })
     .then(() => {
