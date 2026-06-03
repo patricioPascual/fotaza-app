@@ -4,6 +4,11 @@
     "silent": false,
     "deploymentBranches": ["Prod"]
   },
+  "git": {
+"deploymentEnabled": {
+"main": false
+}
+},
   "builds": [
     {
       "src": "app.js",

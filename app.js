@@ -12,6 +12,7 @@ import valoracionRouter from './routes/valoracion.js';
 import fotoRouter from './routes/foto.js';
 import { requireAuth } from './middlewares/auth.js';
 import notificacionRouter from './routes/notificacion.js';
+import reporteRouter from './routes/reporte.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +40,7 @@ app.use(session({
 app.use((req, res, next) => {
     if (req.session) {
         res.locals.usuarioLoggeado = req.session.nombre || null;
+        res.locals.idusuarioLoggeado = req.session?.idusuario || null;
     } else {
         res.locals.usuarioLoggeado = null;
     }
@@ -50,6 +52,7 @@ app.get('/login', (req, res) => res.render('login'));
 
 app.use('/', usuarioRouter);
 
+app.use('/reportes', requireAuth, reporteRouter);
 app.use('/fotos', requireAuth, fotoRouter);
 app.use('/perfil', requireAuth, perfilRoutes);
 app.use('/explorar', requireAuth, explorarRouter);
@@ -58,7 +61,7 @@ app.use('/notificaciones', requireAuth, notificacionRouter);
 app.use('/', requireAuth, publicacionRouter);
 app.use('/', requireAuth, valoracionRouter);
 
-sequelize.sync({ })
+sequelize.sync({alter:true })
     .then(() => {
         app.listen(PORT, () => console.log('Servidor y DB listos'));
     })

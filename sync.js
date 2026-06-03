@@ -33,10 +33,6 @@ Usuario.hasMany(Reporte, { foreignKey: 'idusuario_fk' });
 Reporte.belongsTo(Usuario, { foreignKey: 'idusuario_fk' });
 
 
-Foto.hasMany(Reporte, { foreignKey: 'idfoto_fk' });
-Reporte.belongsTo(Foto, { foreignKey: 'idfoto_fk' });
-
-
 
 Usuario.belongsToMany(Foto, { through: Valora, foreignKey: 'idusuario_fk', otherKey: 'idfoto_fk' });
 Foto.belongsToMany(Usuario, { through: Valora, foreignKey: 'idfoto_fk', otherKey: 'idusuario_fk' });

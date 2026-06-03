@@ -25,6 +25,10 @@ Reporte.init({
         type: DataTypes.TEXT,
         allowNull: false
     },
+    descripcion: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     estado: {
         type: DataTypes.ENUM('pendiente', 'revisado', 'ignorado'),
         defaultValue: 'pendiente'

@@ -1,13 +1,13 @@
-let fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia;
+let fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia, idDuenoFoto;
 
 async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, yaVoto, esMia) {
-     fotoId = idfoto;
+    fotoId = idfoto;
     fotoImg = imagenBase64;
     fotoPromedio = promedio;
     fotoVotos = cantidadVotos;
     fotoYaVoto = yaVoto;
     fotoEsMia = esMia;
-    
+
     document.getElementById('idfotoModal').value = idfoto;
     document.getElementById('modalComentarios').style.display = 'flex';
     document.getElementById('imagenModal').src = `data:image/jpeg;base64,${imagenBase64}`;
@@ -39,7 +39,8 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
     const msgCerrado = document.getElementById('comentariosCerradosMsg');
 
     const estadoRes = await fetch(`/fotos/${idfoto}/estado`);
-    const { comentariosCerrados } = await estadoRes.json();
+    const { comentariosCerrados, idDueno } = await estadoRes.json();
+    idDuenoFoto = idDueno;
 
     if (comentariosCerrados) {
         formComentario.style.display = 'none';
@@ -69,8 +70,15 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
         } else {
             let html = '';
             for (const c of comentarios) {
-                const btnReporte = `<button class="btn-report-comentario" 
-                      onclick="abrirReporte('comentario', ${c.idcomentario})">🚩 Reportar</button>`;
+                const esComentarioDelDueno = c.idusuario_fk === idDuenoFoto;
+                const esMiComentario = c.idusuario_fk === usuarioLogueadoId;
+
+                let btnReporte = '';
+                if (!esComentarioDelDueno && !esMiComentario) {
+                    btnReporte = `<button class="btn-report-comentario" 
+                        onclick="abrirReporte('comentario', ${c.idcomentario})">🚩 Reportar</button>`;
+                }
+
                 html += `<div class="comentario-item">
                     <strong>${c.usuario?.nombre || 'Usuario'}</strong>
                     <p class="comentario-texto">${c.texto}</p>
@@ -136,13 +144,10 @@ async function cerrarComentariosModal() {
     }
 }
 
-
-//REPORTE
-
-// Abrir el modal de reporte (pasando el tipo y el id)
 function abrirReporte(tipo, idreferencia) {
+    const id = idreferencia || document.getElementById('idfotoModal').value;
     document.getElementById('reporteTipo').value = tipo;
-    document.getElementById('reporteIdReferencia').value = idreferencia;
+    document.getElementById('reporteIdReferencia').value = id;
     document.getElementById('modalReporte').style.display = 'flex';
 }
 
@@ -150,7 +155,6 @@ function cerrarReporte() {
     document.getElementById('modalReporte').style.display = 'none';
 }
 
-// Enviar el formulario del modal de reporte
 document.getElementById('formReporte').addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -166,7 +170,6 @@ document.getElementById('formReporte').addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
         if (res.ok) {
             alert("Denuncia enviada correctamente.");
             cerrarReporte();
