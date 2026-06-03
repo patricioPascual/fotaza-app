@@ -19,11 +19,11 @@ html(lang="es")
    
     div#modalComentarios.ventana(style="display:none;")
       div.modal-dos-columnas
-        button.btn-cerrar-modal(onclick="cerrarComentarios()") ✕
+        button.btn-cerrar-modal(onclick="cerrarVentana()") ✕
         div.modal-imagen
           img#imagenModal(src="" alt="foto")
         div.modal-comentarios
-          button.btn-report(title="Reportar esta foto") 🚩 Reportar
+          button.btn-report(onclick="abrirReporte('foto', null)" title="Reportar esta foto") 🚩 Reportar
           button#btnInteres.btn-sidebar(style="display:none;" onclick="expresarInteres()") ❤️ Me interesa
           button#btnCerrarComentarios.btn-sidebar(style="display:none;" onclick="cerrarComentariosModal()") 🔒 Cerrar comentarios
           p#comentariosCerradosMsg(style="display:none; color:#999;") 🔒 Los comentarios están cerrados.
@@ -32,22 +32,26 @@ html(lang="es")
             p Cargando...
           form#formComentario
             input(type="hidden" id="idfotoModal")
-            textarea(name="texto" placeholder="Escribí tu comentario..." required)
+            textarea(name="texto" placeholder="Escribí tu comentario..." )
             button(type="submit") Comentar
           div.modal-valoracion
             div.modal-promedio
               span#modalPromedio ⭐ 0
               span#modalVotos (0 votos)
             p#mensajeVoto(style="display:none;")
-            div#seccionVotar(style="display:flex;")  
-             span Votar:
-             div.botones-puntos
-               button.btn-punto(type="button" onclick="valorar(1)") 1
-               button.btn-punto(type="button" onclick="valorar(2)") 2
-               button.btn-punto(type="button" onclick="valorar(3)") 3
-               button.btn-punto(type="button" onclick="valorar(4)") 4
-               button.btn-punto(type="button" onclick="valorar(5)") 5
-   
+            div#seccionVotar(style="display:flex;")
+              span Votar:
+              div.botones-puntos
+                button.btn-punto(type="button" onclick="valorar(1)") 1
+                button.btn-punto(type="button" onclick="valorar(2)") 2
+                button.btn-punto(type="button" onclick="valorar(3)") 3
+                button.btn-punto(type="button" onclick="valorar(4)") 4
+                button.btn-punto(type="button" onclick="valorar(5)") 5
+
+
+    include partials/modalReporte
+    script.
+      const usuarioLogueadoId = !{idusuarioLoggeado || 'null'};
     script(src="/js/main.js")
     script(src="/js/ventanaPublicacion.js")
     script(src="/js/comentarios.js")

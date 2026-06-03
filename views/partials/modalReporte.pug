@@ -1,0 +1,19 @@
+div#modalReporte.ventana(style="display:none;")
+  div.cargarfoto
+    div(style="display:flex; justify-content:space-between; align-items:center;")
+      h2 Reportar
+      button(onclick="cerrarReporte()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;") ✕
+    form#formReporte
+      input(type="hidden" id="reporteTipo")
+      input(type="hidden" id="reporteIdReferencia")
+      label(for="motivo") Motivo
+      select#motivo(name="motivo" required)
+        option(value="" disabled selected) Seleccioná un motivo
+        option(value="contenido_inapropiado") Contenido inapropiado
+        option(value="spam") Spam
+        option(value="acoso") Acoso
+        option(value="derechos_de_autor") Derechos de autor
+        option(value="otro") Otro
+      label(for="descripcion") Descripción
+      textarea#descripcion(name="descripcion" placeholder="Describí el motivo de la denuncia..." required)
+      button(type="submit") Enviar denuncia

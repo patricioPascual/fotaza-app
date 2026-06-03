@@ -110,10 +110,13 @@ export async function getEstadoFoto(req, res) {
     try {
         const { idfoto } = req.params;
         const foto = await Foto.findByPk(idfoto, {
-            attributes: ['comentariosCerrados']
+            include: [{ model: Publicacion, attributes: ['idusuario_fk'] }]
         });
         if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
-        res.json({ comentariosCerrados: foto.comentariosCerrados,idDueno: foto.idusuario_fk });
+        res.json({ 
+            comentariosCerrados: foto.comentariosCerrados,
+            idDueno: foto.publicacion.idusuario_fk
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
