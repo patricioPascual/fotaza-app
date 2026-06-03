@@ -320,3 +320,60 @@ a.username {
 a.username:hover {
     text-decoration: underline;
 }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .container-principal {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        position: relative;
+        top: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 10px;
+        gap: 8px;
+        border-right: none;
+        border-bottom: 1px solid #dbdbdb;
+    }
+
+    .btn-sidebar {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .ventana form {
+        width: 90vw;
+    }
+
+    .modal-dos-columnas {
+        flex-direction: column;
+        width: 95vw;
+        max-height: 90vh;
+    }
+
+    .modal-imagen {
+        width: 100%;
+        max-height: 250px;
+        border-right: none;
+        border-bottom: 2px solid #ccc;
+    }
+
+    .modal-comentarios {
+        width: 100%;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    #muro-fotos {
+        padding: 10px;
+    }
+
+    .foto-card {
+        max-width: 100%;
+    }
+}
