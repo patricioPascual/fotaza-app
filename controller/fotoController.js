@@ -21,7 +21,7 @@ export async function subirFotoPerfil(req, res) {
         const buffer = Buffer.from(datosPuros, 'base64');
 
         
-        const idUsuario = 1; 
+        const idUsuario = req.session.idusuario; 
 
        
         await Usuario.update(
@@ -29,7 +29,7 @@ export async function subirFotoPerfil(req, res) {
             { where: { idusuario: idUsuario } }
         );
 
-        console.log("Foto de perfil actualizada.");
+        
         res.redirect('/perfil');
 
     } catch (error) {
@@ -113,7 +113,7 @@ export async function getEstadoFoto(req, res) {
             attributes: ['comentariosCerrados']
         });
         if (!foto) return res.status(404).json({ error: 'Foto no encontrada' });
-        res.json({ comentariosCerrados: foto.comentariosCerrados });
+        res.json({ comentariosCerrados: foto.comentariosCerrados,idDueno: foto.idusuario_fk });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
