@@ -15,13 +15,14 @@ block main_content
           
           div.form-group
             label(for="tipoBusqueda") Buscar por:
-            select(name="tipoBusqueda" id="tipoBusqueda" required)
+            select(name="tipoBusqueda" id="tipoBusqueda" )
               option(value="usuario") Usuario
               option(value="etiqueta") Etiqueta
-          
+              option(value="general") Buscar Todo
+              option(value="combinada") Busqueda Combinada
           div.form-group
             label(for="criterio") Buscar:
-            input(name="criterio" id="criterio" type="text" placeholder="Escribe aquí..." value=datos required)
+            input(name="criterio" id="criterio" type="text" placeholder="Escribe aquí..." value=datos )
           
           button.btn-new-post.btn-sidebar(type="submit" ) Buscar
 

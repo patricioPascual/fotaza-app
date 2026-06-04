@@ -17,6 +17,7 @@ div.foto-card
   
   div.card-body
     h3= pub.titulo
+    h4=pub.descripcion 
     if pub.etiqueta && pub.etiqueta.length > 0
       p.foto-etiquetas
         each tag in pub.etiqueta
