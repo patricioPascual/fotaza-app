@@ -6,6 +6,8 @@ import { Etiqueta } from '../models/Etiqueta.js';
 import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
 import { aplicarMarcaAgua } from './fotoController.js';
 
+const condicionActiva = { bajada: false };
+
 export async function crearPublicacion(req, res) {
     try {
         const { titulo, etiquetas, descripcion, imagenesBase64, copyright, marcaAgua } = req.body;
@@ -65,6 +67,7 @@ export async function traerAllPublicaciones(req, res) {
         const idusuarioLoggeado = req.session.idusuario;
 
         const publicaciones = await Publicacion.findAll({
+            where: condicionActiva,
             include: [
                 { model: Foto },
                 { model: Usuario },
@@ -96,6 +99,7 @@ export async function traerPublicacionesByTag(req, res) {
         const { etiqueta } = req.params; 
 
         const publicaciones = await Publicacion.findAll({
+            where: condicionActiva,
             include: [
                 { model: Foto },
                 { model: Usuario },
@@ -145,6 +149,7 @@ export async function procesarBusqueda(req, res) {
 
 export async function buscarPublicacionesPorUsuario(nombreUsuario) {
     return await Publicacion.findAll({
+        where: condicionActiva,
         include: [
             { model: Foto },
             { model: Usuario, where: { nombre: nombreUsuario } },

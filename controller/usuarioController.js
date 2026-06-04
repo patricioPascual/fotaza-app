@@ -86,7 +86,8 @@ export async function autenticarUsuario(req, res) {
         
         req.session.idusuario = usuario.idusuario;
         req.session.nombre = usuario.nombre;
-
+        req.session.isAdmin = usuario.isAdmin;
+        
         res.redirect('/index');
     } catch (error) {
         console.log('error al ingresar', error);
