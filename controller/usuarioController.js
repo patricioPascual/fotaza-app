@@ -1,7 +1,7 @@
 import { crearUsuario } from '../models/Usuario.js';
 import { validarUsuario } from '../helpers/validaciones.js';
 import { Usuario } from '../models/Usuario.js';
-import { buscarPublicacionesPorUsuario } from './publicacionController.js';
+import { buscarPublicacionesPorUsuario } from './explorarController.js';
 import { calcularPromedioPorFoto,usuarioYaVoto } from './valoracionController.js';
 import { crearNotificacion } from './notificacionController.js';
 

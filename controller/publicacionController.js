@@ -94,3 +94,45 @@ export async function traerAllPublicaciones(req, res) {
     }
 }
 
+export async function traerPublicacionesDeSeguidos(req, res) {
+    try {
+        const idusuarioLoggeado = req.session.idusuario;
+
+        const usuario = await Usuario.findByPk(idusuarioLoggeado);
+        const seguidos = await usuario.getSeguidos();
+
+        if (seguidos.length === 0) {
+            return res.render('siguiendo', { publicaciones: [], sinSeguidos: true });
+        }
+
+        const idsSeguidos = seguidos.map(u => u.idusuario);
+
+        const publicaciones = await Publicacion.findAll({
+            where: { 
+                idusuario_fk: idsSeguidos,
+                bajada: false
+            },
+            include: [
+                { model: Foto },
+                { model: Usuario },
+                { model: Etiqueta }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        for (const pub of publicaciones) {
+            for (const foto of pub.fotos) {
+                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+                foto.dataValues.promedio = promedio;
+                foto.dataValues.cantidadVotos = cantidadVotos;
+                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
+                foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
+            }
+        }
+
+        res.render('siguiendo', { publicaciones, sinSeguidos: false });
+    } catch (error) {
+        console.log("error cargando publicaciones de seguidos", error);
+        res.status(500).send("Error al cargar el feed");
+    }
+}

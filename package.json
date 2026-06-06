@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "db:init": "psql -U postgres -d fotaza_db -f ./db/init.sql"
+    "db:init": "node db/init.js",
+     "db:seed": "node db/seeds.js"
   },
   "dependencies": {
     "bcrypt": "6.0.0",

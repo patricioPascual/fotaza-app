@@ -8,7 +8,7 @@ async function valorar(puntos) {
             body: JSON.stringify({ idFoto, puntaje: puntos })
         });
         const data = await response.json();
-        alert(data.message);
+        showToast(data.message, response.ok ? 'success' : 'error');
     } catch (error) {
         console.error("Error:", error);
     }

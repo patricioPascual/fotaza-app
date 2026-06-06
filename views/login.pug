@@ -4,14 +4,18 @@ block head
   title Fotaza - Iniciar Sesión
   link(rel="stylesheet", href="/css/Style.css")
   link(rel="stylesheet", href="/css/formularios.css")
+
 block main_content
+  include mixins/alert
+
   div.login-container
     div.login-card
       h2 Iniciar Sesión
+      +alerta(alert)
       form(action="/login" method="POST" novalidate)
         div.form-group
           label(for="email") Correo Electrónico
-          input(name="email" id="email" type="email" placeholder="ejemplo@mail.com" value=datos ? datos.email : "" required) 
+          input(name="email" id="email" type="email" placeholder="ejemplo@mail.com" value=datos ? datos.email : "" required)
           span.error-msg= errores && errores.email ? errores.email[0] : ''
         div.form-group
           label(for="password") Contraseña
@@ -20,5 +24,5 @@ block main_content
         button.btn-login(type="submit") Ingresar
       
       div.login-footer
-        p ¿No tienes cuenta? 
+        p ¿No tienes cuenta?
           a(href="/registro") Regístrate aquí

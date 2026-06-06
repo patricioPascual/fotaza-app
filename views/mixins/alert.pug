@@ -1,0 +1,4 @@
+mixin alerta(alert)
+  if alert
+    div.alert-mensaje(class=alert.status)
+      p= alert.text
