@@ -1,0 +1,27 @@
+extends layout
+
+block head
+  title Fotaza - Panel Admin
+  link(rel="stylesheet", href="/css/Style.css")
+
+block main_content
+  div.container-principal
+    include partials/sidebar
+    
+    main#muro-principal
+      h2 Publicaciones en revisión
+
+      if publicaciones && publicaciones.length > 0
+        each pub in publicaciones
+          div.notif-item
+            div.notif-contenido
+              strong= pub.usuario.nombre
+              span  — #{pub.titulo}
+            div.notif-meta
+              small.comentario-fecha= new Date(pub.createdAt).toLocaleDateString()
+              form(action=`/reportes/admin/${pub.idpublicacion}/bajar` method="POST" style="display:inline;")
+                button(type="submit") 🚫 Dar de baja
+              form(action=`/reportes/admin/${pub.idpublicacion}/desestimar` method="POST" style="display:inline;")
+                button(type="submit") ✅ Desestimar
+      else
+        p.comentario-vacio No hay publicaciones en revisión.

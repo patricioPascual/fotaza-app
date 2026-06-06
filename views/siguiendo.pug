@@ -1,0 +1,17 @@
+extends layout
+
+block head
+  title Fotaza - Siguiendo
+  link(rel="stylesheet", href="/css/Style.css")
+
+block main_content
+  div.container-principal
+    include partials/sidebar
+    main#muro-fotos
+      if sinSeguidos
+        p.comentario-vacio No seguís a ningún usuario todavía. ¡Explorá y empezá a seguir!
+      else if publicaciones.length === 0
+        p.comentario-vacio Los usuarios que seguís no tienen publicaciones aún.
+      else
+        each pub in publicaciones
+          include partials/publicaciones

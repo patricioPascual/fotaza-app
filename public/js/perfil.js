@@ -48,6 +48,6 @@ async function toggleSeguir(nombreUsuario) {
             btn.textContent = yaSigue ? 'Seguir' : 'Dejar de seguir';
         }
     } catch (e) {
-        alert('Error al procesar la solicitud.');
+        showToast('Error al procesar la solicitud.', 'error');
     }
 }

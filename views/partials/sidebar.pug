@@ -57,4 +57,11 @@ aside.sidebar
 
   a.btn-sidebar(href="/colecciones")
     i 🖼️
-    span Colecciones
+    span Colecciones 
+  a.btn-sidebar(href="/siguiendo")
+    i 👥
+    span Usuarios que sigo  
+  if usuarioLoggeado && isAdmin
+    a.btn-sidebar(href="/reportes/admin/revisiones")
+      i 🛡️
+      span Panel Admin  

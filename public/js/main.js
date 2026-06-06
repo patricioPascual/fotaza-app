@@ -1,9 +1,10 @@
 function toggleMenu() {
-    const menu = document.getElementById("menu-desplegable");
-    menu.classList.toggle("show");
-}
+      const menu = document.getElementById("menu-desplegable");
+      menu.classList.toggle("show");
+    }
 
-function showToast(mensaje, tipo = 'success') {
+    
+  function showToast(mensaje, tipo = 'success') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${tipo}`;

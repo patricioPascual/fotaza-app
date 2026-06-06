@@ -41,6 +41,7 @@ app.use((req, res, next) => {
     if (req.session) {
         res.locals.usuarioLoggeado = req.session.nombre || null;
         res.locals.idusuarioLoggeado = req.session?.idusuario || null;
+         res.locals.isAdmin = req.session?.isAdmin || false;
     } else {
         res.locals.usuarioLoggeado = null;
     }

@@ -14,7 +14,14 @@ Publicacion.init({
         allowNull: false
     },
     descripcion: DataTypes.TEXT,
-   
+    bajada: {
+    type: DataTypes.BOOLEAN,
+     defaultValue: false
+},
+    enRevision: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+}
     
 }, { sequelize, modelName: 'publicacion',
      tableName: 'publicacion' ,

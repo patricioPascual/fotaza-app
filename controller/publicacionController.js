@@ -6,6 +6,8 @@ import { Etiqueta } from '../models/Etiqueta.js';
 import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
 import { aplicarMarcaAgua } from './fotoController.js';
 
+const condicionActiva = { bajada: false };
+
 export async function crearPublicacion(req, res) {
     try {
         const { titulo, etiquetas, descripcion, imagenesBase64, copyright, marcaAgua } = req.body;
@@ -65,6 +67,7 @@ export async function traerAllPublicaciones(req, res) {
         const idusuarioLoggeado = req.session.idusuario;
 
         const publicaciones = await Publicacion.findAll({
+            where: condicionActiva,
             include: [
                 { model: Foto },
                 { model: Usuario },
@@ -91,65 +94,45 @@ export async function traerAllPublicaciones(req, res) {
     }
 }
 
-export async function traerPublicacionesByTag(req, res) {
+export async function traerPublicacionesDeSeguidos(req, res) {
     try {
-        const { etiqueta } = req.params; 
+        const idusuarioLoggeado = req.session.idusuario;
+
+        const usuario = await Usuario.findByPk(idusuarioLoggeado);
+        const seguidos = await usuario.getSeguidos();
+
+        if (seguidos.length === 0) {
+            return res.render('siguiendo', { publicaciones: [], sinSeguidos: true });
+        }
+
+        const idsSeguidos = seguidos.map(u => u.idusuario);
 
         const publicaciones = await Publicacion.findAll({
+            where: { 
+                idusuario_fk: idsSeguidos,
+                bajada: false
+            },
             include: [
                 { model: Foto },
                 { model: Usuario },
-                { 
-                    model: Etiqueta,
-                    where: { nombre: etiqueta }
-                     
-                }
+                { model: Etiqueta }
             ],
             order: [['createdAt', 'DESC']]
         });
 
-        res.render('explorar', { publicaciones });
+        for (const pub of publicaciones) {
+            for (const foto of pub.fotos) {
+                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+                foto.dataValues.promedio = promedio;
+                foto.dataValues.cantidadVotos = cantidadVotos;
+                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
+                foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
+            }
+        }
+
+        res.render('siguiendo', { publicaciones, sinSeguidos: false });
     } catch (error) {
-        console.log("Error cargando publicaciones por tag:", error);
-        res.status(500).send("Error al cargar el muro");
+        console.log("error cargando publicaciones de seguidos", error);
+        res.status(500).send("Error al cargar el feed");
     }
-}
-export async function traerPublicacionesByUser(req,res) {
-    try{
-        const {nombreUsuario}=req.params;
-        const publicaciones= await buscarPublicacionesPorUsuario(nombreUsuario);
-       
-        res.render('explorar', {publicaciones});
-       
-    }catch(error){
-        console.log("error cargando publicaciones",error);
-        res.status(500).send("Error al cargar el muro");
-    }
-}
-export async function procesarBusqueda(req, res) {
-    const { tipoBusqueda, criterio } = req.body;
-    
-  
-    if (!criterio || criterio.trim() === "") {
-        return res.redirect('/explorar');
-    }
-
-    if (tipoBusqueda === 'usuario') {
-        res.redirect(`/explorar/usuario/${criterio}`);
-    } else {
-        res.redirect(`/explorar/etiqueta/${criterio}`);
-    }
-}
-
-//AUXILIAR
-
-export async function buscarPublicacionesPorUsuario(nombreUsuario) {
-    return await Publicacion.findAll({
-        include: [
-            { model: Foto },
-            { model: Usuario, where: { nombre: nombreUsuario } },
-            { model: Etiqueta }
-        ],
-        order: [['createdAt', 'DESC']]
-    });
 }

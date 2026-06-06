@@ -4,12 +4,12 @@ async function expresarInteres() {
         const res = await fetch(`/fotos/${idfoto}/interes`, { method: 'POST' });
         const data = await res.json();
         if (data.ok) {
-            alert('¡Interés expresado! El autor será notificado.');
+            showToast('¡Interés expresado! El autor será notificado.', 'success');
             document.getElementById('btnInteres').style.display = 'none';
         } else {
-            alert(data.error);
+            showToast(data.error, 'error');
         }
     } catch (e) {
-        alert('Error al expresar interés.');
+        showToast('Error al expresar interés.', 'error');
     }
 }

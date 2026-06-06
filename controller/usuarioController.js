@@ -1,7 +1,7 @@
 import { crearUsuario } from '../models/Usuario.js';
 import { validarUsuario } from '../helpers/validaciones.js';
 import { Usuario } from '../models/Usuario.js';
-import { buscarPublicacionesPorUsuario } from './publicacionController.js';
+import { buscarPublicacionesPorUsuario } from './explorarController.js';
 import { calcularPromedioPorFoto,usuarioYaVoto } from './valoracionController.js';
 import { crearNotificacion } from './notificacionController.js';
 
@@ -86,7 +86,8 @@ export async function autenticarUsuario(req, res) {
         
         req.session.idusuario = usuario.idusuario;
         req.session.nombre = usuario.nombre;
-
+        req.session.isAdmin = usuario.isAdmin;
+        
         res.redirect('/index');
     } catch (error) {
         console.log('error al ingresar', error);

@@ -111,7 +111,7 @@ document.getElementById('formComentario').addEventListener('submit', async funct
         this.querySelector('textarea').value = '';
         abrirComentarios(fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia);
     } catch (e) {
-        alert('Error al enviar el comentario.');
+        showToast('Error al enviar el comentario.', 'error');
     }
 });
 
