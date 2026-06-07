@@ -17,7 +17,7 @@ aside.sidebar
       
       h2 Nueva Publicación
 
-      form(action="/publicar" method="POST" novalidate)
+      form#formPublicar(action="/publicar" method="POST" novalidate)
         label(for="titulo") Título de la Publicación
         input(type="text" name="titulo" placeholder="Titulo..." required)
         
@@ -35,7 +35,7 @@ aside.sidebar
           span Agregar Foto
 
         input(type="file" id="inputArchivo" style="display: none;" accept="image/*" multiple)
-
+        button.btn-sidebar(type="button" onclick="cerrarNuevaPublicacion()") ✕ Cancelar
         hr
         button(type="submit") Publicar
 

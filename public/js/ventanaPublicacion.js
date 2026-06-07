@@ -3,7 +3,7 @@ function nuevaPublicacion() {
     if (ventana) ventana.style.display = 'flex';
 }
 
-function cerrarVentana() {
+function cerrarNuevaPublicacion() {
     const ventana = document.getElementById('nuevaPublicacion');
     if (ventana) {
         ventana.style.display = 'none';
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     img.style.borderRadius = '5px';
                     img.style.margin = '5px';
 
-                    // opciones de licencia debajo de la preview
+                   
                     const contenedorFoto = document.createElement('div');
                     contenedorFoto.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:5px; margin:5px;';
                     contenedorFoto.appendChild(img);
