@@ -1,5 +1,11 @@
 let fotoId, fotoImg, fotoPromedio, fotoVotos, fotoYaVoto, fotoEsMia, idDuenoFoto;
 
+function escaparHTML(texto) {
+    const div = document.createElement('div');
+    div.innerText = texto;
+    return div.innerHTML;
+}
+
 async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, yaVoto, esMia) {
     fotoId = idfoto;
     fotoImg = imagenBase64;
@@ -80,8 +86,8 @@ async function abrirComentarios(idfoto, imagenBase64, promedio, cantidadVotos, y
                 }
 
                 html += `<div class="comentario-item">
-                    <strong>${c.usuario?.nombre || 'Usuario'}</strong>
-                    <p class="comentario-texto">${c.texto}</p>
+                     <strong>${escaparHTML(c.usuario?.nombre || 'Usuario')}</strong>
+                    <p class="comentario-texto">${escaparHTML(c.texto)}</p>
                     <small class="comentario-fecha">${new Date(c.createdAt).toLocaleDateString()}</small>
                     ${btnReporte}
                 </div>`;
@@ -140,7 +146,7 @@ async function cerrarComentariosModal() {
             }
         }
     } catch (e) {
-        alert('Error al procesar.');
+        showToast('Error al procesar.', 'error');
     }
 }
 
@@ -171,13 +177,13 @@ document.getElementById('formReporte').addEventListener('submit', async (e) => {
             body: JSON.stringify(data)
         });
         if (res.ok) {
-            alert("Denuncia enviada correctamente.");
+            showToast('Denuncia enviada correctamente.', 'success');
             cerrarReporte();
         } else {
-            alert("Error al enviar la denuncia.");
+            showToast('Error al enviar la denuncia.', 'error');
         }
     } catch (e) {
         console.error(e);
-        alert("Error de conexión.");
+        showToast('Error de conexión.', 'error');
     }
 });
