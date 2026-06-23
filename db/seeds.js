@@ -15,12 +15,14 @@ async function seed() {
     try {
         console.log('Iniciando seeds...');
 
+        await Rol.create({ idrol: 1, nombre: 'admin' });
+        await Rol.create({ idrol: 2, nombre: 'usuario' }); 
         // --- USUARIOS ---
         const usuario1 = await Usuario.create({
             nombre: 'AdminFotaza',
             email: 'administrador@fotaza.com',
             password: 'Admin1234',
-            isAdmin: true,
+              idrol_fk: 1,
             estado: true
         });
 
@@ -28,7 +30,7 @@ async function seed() {
             nombre: 'JackSparrow',
             email: 'jack@fotaza.com',
             password: 'Jack1234',
-            isAdmin: false,
+            idrol_fk: 2,
             estado: true
         });
 
@@ -36,7 +38,7 @@ async function seed() {
             nombre: 'AnaFotografa',
             email: 'ana@fotaza.com',
             password: 'Ana1234',
-            isAdmin: false,
+             idrol_fk: 2,
             estado: true
         });
 

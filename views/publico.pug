@@ -1,0 +1,21 @@
+extends layout
+
+block head
+  title Fotaza - Contenido Público
+  link(rel="stylesheet", href="/css/Style.css")
+
+block main_content
+  div.container-publico
+    h2.titulo-publico 📸 Contenido Público
+    p.subtitulo-publico
+      | Estás viendo contenido sin copyright. 
+      a(href="/login") Inicia sesión
+      |  para interactuar.
+    
+    div#muro-fotos
+      - const esPublico = true
+      each pub in publicaciones
+        include partials/publicaciones
+      
+      if !publicaciones || publicaciones.length === 0
+        p.comentario-vacio No hay contenido público disponible.

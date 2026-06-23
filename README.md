@@ -50,7 +50,7 @@ Ver .env.example para la lista completa de variables necesarias.
 
 
 ## Problemas encontrados y soluciones
- 1Problema al hacer deploy en Vercel , ya que es serverless y no mantenia la sesion 
+1.Problema al hacer deploy en Vercel , ya que es serverless y no mantenia la sesion 
  solucion se realizo deploy en Render.   
  
  2. Layout roto al agregar comentarios

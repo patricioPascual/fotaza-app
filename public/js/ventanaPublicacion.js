@@ -25,7 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputArchivo = document.getElementById('inputArchivo');
     const contenedorInputs = document.getElementById('contenedorInputsBase64');
     const previsualizacion = document.getElementById('previsualizacion');
+     
+    //para verificacion de datos e imagenes cargadas
+    document.getElementById('formPublicar').addEventListener('submit', function(e) {
+        const titulo = this.querySelector('input[name="titulo"]').value.trim();
+        const imagenes = contenedorInputs.querySelectorAll('textarea[name="imagenesBase64"]');
 
+        if (!titulo) {
+            e.preventDefault();
+            showToast('El título es obligatorio.', 'error');
+            return;
+        }
+
+        if (imagenes.length === 0) {
+            e.preventDefault();
+            showToast('Debés agregar al menos una foto.', 'error');
+            return;
+        }
+    });
     if (inputArchivo) {
         inputArchivo.addEventListener('change', function(e) {
             const archivos = Array.from(e.target.files);

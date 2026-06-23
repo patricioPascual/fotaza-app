@@ -4,7 +4,7 @@ import { Usuario } from '../models/Usuario.js';
 import { buscarPublicacionesPorUsuario } from './explorarController.js';
 import { calcularPromedioPorFoto,usuarioYaVoto } from './valoracionController.js';
 import { crearNotificacion } from './notificacionController.js';
-
+import {Rol} from '../models/Rol.js';
 
 export async function registrarUsuario(req, res) {
     const { nombre, email, password ,password2} = req.body;
@@ -63,7 +63,7 @@ export async function autenticarUsuario(req, res) {
     }
 
     try {
-        const usuario = await Usuario.findOne({ where: { email } });
+        const usuario = await Usuario.findOne({ where: { email },include:[{model:Rol}]});
 
         if (!usuario) {
             return res.render('login', {
@@ -82,11 +82,17 @@ export async function autenticarUsuario(req, res) {
                 datos: { email }
             });
         }
-
+       if (!usuario.estado) {
+    return res.render('login', {
+        alert: { status: 'error', text: "Tu cuenta está inactiva." },
+        errores: {},
+        datos: { email }
+    });
+}
         
         req.session.idusuario = usuario.idusuario;
         req.session.nombre = usuario.nombre;
-        req.session.isAdmin = usuario.isAdmin;
+        req.session.isAdmin = (usuario.rol && usuario.rol.nombre === 'admin');
         
         res.redirect('/index');
     } catch (error) {

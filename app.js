@@ -13,6 +13,8 @@ import fotoRouter from './routes/foto.js';
 import { requireAuth } from './middlewares/auth.js';
 import notificacionRouter from './routes/notificacion.js';
 import reporteRouter from './routes/reporte.js';
+import publicoRouter from './routes/publico.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -52,7 +54,10 @@ app.get('/registro', (req, res) => res.render('registro'));
 app.get('/login', (req, res) => res.render('login'));
 
 app.use('/', usuarioRouter);
+//publica
+app.use('/publico', publicoRouter); 
 
+//protegidas
 app.use('/reportes', requireAuth, reporteRouter);
 app.use('/fotos', requireAuth, fotoRouter);
 app.use('/perfil', requireAuth, perfilRoutes);
@@ -62,7 +67,9 @@ app.use('/notificaciones', requireAuth, notificacionRouter);
 app.use('/', requireAuth, publicacionRouter);
 app.use('/', requireAuth, valoracionRouter);
 
-sequelize.sync({alter:true })
+
+
+sequelize.sync({alter:true})
     .then(() => {
         app.listen(PORT, () => console.log('Servidor y DB listos'));
     })

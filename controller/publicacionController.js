@@ -11,7 +11,14 @@ const condicionActiva = { bajada: false };
 export async function crearPublicacion(req, res) {
     try {
         const { titulo, etiquetas, descripcion, imagenesBase64, copyright, marcaAgua } = req.body;
+         
+         if (!titulo || titulo.trim() === '') {
+            return res.status(400).send('El título es obligatorio.');
+        }
 
+        if (!imagenesBase64) {
+            return res.status(400).send('Debés agregar al menos una foto.');
+        }
         const nuevaPub = await Publicacion.create({
             titulo,
             descripcion,
@@ -134,5 +141,37 @@ export async function traerPublicacionesDeSeguidos(req, res) {
     } catch (error) {
         console.log("error cargando publicaciones de seguidos", error);
         res.status(500).send("Error al cargar el feed");
+    }
+}
+
+//anonimos 
+export async function traerPublicacionesPublicas(req, res) {
+    try {
+        const publicaciones = await Publicacion.findAll({
+            where: { bajada: false },
+            include: [
+                { 
+                    model: Foto,
+                    where: { copyright: false },
+                    required: true
+                },
+                { model: Usuario },
+                { model: Etiqueta }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        for (const pub of publicaciones) {
+            for (const foto of pub.fotos) {
+                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+                foto.dataValues.promedio = promedio;
+                foto.dataValues.cantidadVotos = cantidadVotos;
+            }
+        }
+
+        res.render('publico', { publicaciones });
+    } catch (error) {
+        console.log("error cargando publicaciones públicas", error);
+        res.status(500).send("Error al cargar el contenido público");
     }
 }

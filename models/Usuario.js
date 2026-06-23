@@ -37,15 +37,17 @@ Usuario.init(
         allowNull:false,
         defaultValue:true
     },
-    isAdmin:{
-        type:DataTypes.BOOLEAN,
-        allowNull:false,
-        defaultValue:false
-    },
+    
     fotoPerfil:{
         type:DataTypes.BLOB,
         allowNull:true  
-    }
+    },
+   idrol_fk: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+   // defaultValue: 2,
+   
+}
 
   },
   {
@@ -74,7 +76,7 @@ export async function  crearUsuario(nombre,email,password){
         nombre,
         email:email,
         password:password,
-       
+        idrol_fk: 2
       })
          return nuevoUsuario.toJSON();  
      }catch(error){

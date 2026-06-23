@@ -8,6 +8,7 @@ import { Reporte } from './models/Reporte.js';
 import { Mensaje } from './models/Mensaje.js';
 import {Etiqueta}  from './models/Etiqueta.js';
 import{Notificacion} from './models/Notificacion.js'
+import {Rol} from './models/Rol.js'
 
 Usuario.hasMany(Publicacion, { foreignKey: 'idusuario_fk' });
 Publicacion.belongsTo(Usuario, { foreignKey: 'idusuario_fk' });
@@ -37,6 +38,8 @@ Reporte.belongsTo(Usuario, { foreignKey: 'idusuario_fk' });
 Usuario.belongsToMany(Foto, { through: Valora, foreignKey: 'idusuario_fk', otherKey: 'idfoto_fk' });
 Foto.belongsToMany(Usuario, { through: Valora, foreignKey: 'idfoto_fk', otherKey: 'idusuario_fk' });
 
+Rol.hasMany(Usuario, { foreignKey: 'idrol_fk' });
+Usuario.belongsTo(Rol, { foreignKey: 'idrol_fk' });
 
 Coleccion.belongsToMany(Publicacion, { 
     through: ColeccionPublicacion, 
