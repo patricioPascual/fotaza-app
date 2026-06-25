@@ -5,7 +5,10 @@ function toggleMenu() {
 
     
   function showToast(mensaje, tipo = 'success') {
-    const container = document.getElementById('toast-container');
+    const modalAbierto = document.getElementById('modalComentarios')?.style.display === 'flex';
+    const containerId = modalAbierto ? 'toast-container' : 'toast-container-global';
+    const container = document.getElementById(containerId);
+    
     const toast = document.createElement('div');
     toast.className = `toast ${tipo}`;
     toast.textContent = mensaje;

@@ -16,7 +16,7 @@ html(lang="es")
     block header-menu
    
     block main_content
-   
+    div#toast-container-global
     div#modalComentarios.ventana(style="display:none;")
       div.modal-dos-columnas
         div#toast-container
@@ -33,7 +33,7 @@ html(lang="es")
             p Cargando...
           form#formComentario
             input(type="hidden" id="idfotoModal")
-            textarea(name="texto" placeholder="Escribí tu comentario..." )
+            textarea(name="texto" placeholder="Escribí tu comentario...")
             button(type="submit") Comentar
           div.modal-valoracion
             div.modal-promedio
@@ -49,6 +49,13 @@ html(lang="es")
                 button.btn-punto(type="button" onclick="valorar(4)") 4
                 button.btn-punto(type="button" onclick="valorar(5)") 5
 
+    div#modalConfirmar.ventana(style="display:none;")
+      div.cargarfoto
+        h2 ¿Eliminar publicación?
+        p.comentario-vacio Esta acción no se puede deshacer.
+        div.modal-acciones
+          button.btn-sidebar(onclick="cerrarConfirmar()") Cancelar
+          button#btnConfirmarEliminar.btn-eliminar Eliminar
 
     include partials/modalReporte
     script.

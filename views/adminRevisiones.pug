@@ -17,6 +17,18 @@ block main_content
             div.notif-contenido
               strong= pub.usuario.nombre
               span  — #{pub.titulo}
+            
+            each foto in pub.fotos
+              if foto.reportes && foto.reportes.length > 0
+                div.reportes-lista
+                  p.comentario-fecha Reportes (#{foto.reportes.length}):
+                  each rep in foto.reportes
+                    div.reporte-item
+                      strong= rep.usuario.nombre
+                      span  — #{rep.motivo}
+                      if rep.descripcion
+                        p.comentario-texto= rep.descripcion
+
             div.notif-meta
               small.comentario-fecha= new Date(pub.createdAt).toLocaleDateString()
               form(action=`/reportes/admin/${pub.idpublicacion}/bajar` method="POST" style="display:inline;")

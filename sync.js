@@ -41,6 +41,15 @@ Foto.belongsToMany(Usuario, { through: Valora, foreignKey: 'idfoto_fk', otherKey
 Rol.hasMany(Usuario, { foreignKey: 'idrol_fk' });
 Usuario.belongsTo(Rol, { foreignKey: 'idrol_fk' });
 
+
+//reporte 
+Foto.hasMany(Reporte, { foreignKey: 'idreferencia', scope: { tipo: 'foto' } });
+Reporte.belongsTo(Foto, { foreignKey: 'idreferencia', constraints: false });
+
+Comentario.hasMany(Reporte, { foreignKey: 'idreferencia', scope: { tipo: 'comentario' } });
+Reporte.belongsTo(Comentario, { foreignKey: 'idreferencia', constraints: false });
+
+
 Coleccion.belongsToMany(Publicacion, { 
     through: ColeccionPublicacion, 
     foreignKey: 'idcoleccion_fk', 

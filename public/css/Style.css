@@ -394,6 +394,17 @@ a.username:hover {
     pointer-events: none;
 }
 
+#toast-container-global {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
 .toast {
     background: white;
     border-radius: 10px;
@@ -411,4 +422,11 @@ a.username:hover {
 @keyframes fadeInToast {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
 }

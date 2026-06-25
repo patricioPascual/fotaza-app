@@ -41,8 +41,8 @@ export async function crearReporte(req, res) {
 
         // contar reportes únicos por usuario para esta foto
         if (tipo === 'foto') {
-            const cantidadReportes = await Reporte.count({
-                where: { tipo: 'foto', idreferencia },
+            const cantidadReportes = await Reporte.count({   //para que no traiga los desestimados
+                where: { tipo: 'foto', idreferencia, estado:'pendiente' },
                 distinct: true,
                 col: 'idusuario_fk'
             });
@@ -122,19 +122,26 @@ export async function desestrimarReportes(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
-
 export async function getPublicacionesEnRevision(req, res) {
     try {
         const publicaciones = await Publicacion.findAll({
             where: { enRevision: true, bajada: false },
             include: [
                 { model: Usuario, attributes: ['nombre'] },
-                { model: Foto }
+                { 
+                    model: Foto,
+                    include: [{
+                        model: Reporte,
+                        required: false,
+                        include: [{ model: Usuario, attributes: ['nombre'] }]
+                    }]
+                }
             ],
             order: [['createdAt', 'DESC']]
         });
+
         res.render('adminRevisiones', { publicaciones });
     } catch (error) {
-        res.status(500).send('Error al cargar revisiones.');
+        res.status(500).send('Error al cargar revisiones: ' + error.message);
     }
 }

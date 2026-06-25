@@ -5,6 +5,7 @@ import { Usuario } from '../models/Usuario.js'
 import { Etiqueta } from '../models/Etiqueta.js';
 import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
 import { aplicarMarcaAgua } from './fotoController.js';
+import sequelize from '../db.js';
 
 const condicionActiva = { bajada: false };
 
@@ -173,5 +174,75 @@ export async function traerPublicacionesPublicas(req, res) {
     } catch (error) {
         console.log("error cargando publicaciones públicas", error);
         res.status(500).send("Error al cargar el contenido público");
+    }
+} 
+
+//PRUEBA EDICION 
+    export async function editarPublicacion(req, res) {
+    try {
+        const { idpublicacion } = req.params;
+        const { titulo, descripcion, etiquetas } = req.body;
+        const idusuario = req.session.idusuario;
+
+        const pub = await Publicacion.findByPk(idpublicacion);
+        if (!pub) return res.status(404).send('Publicación no encontrada.');
+        if (pub.idusuario_fk !== idusuario) return res.status(403).send('No tenés permiso.');
+        if (pub.enRevision || pub.bajada) return res.status(403).send('No podés editar una publicación denunciada.');
+
+        // 1. Actualizo datos basico
+        await pub.update({ titulo, descripcion });
+
+        // 2. Actualizo etiquetas manualmente en tabla intermedia
+        // Use el nombre real de la tabla en la DB
+        const TablaIntermedia = sequelize.models.publicacion_etiqueta;
+
+        // Borro todas las relaciones actuales de esta publicacion
+        await TablaIntermedia.destroy({
+            where: { idpublicacion_fk: idpublicacion }
+        });
+
+        // Si hay nuevas etiquetas, las proceso e inserto
+        if (etiquetas && etiquetas.trim() !== '') {
+            const listaEtiquetas = etiquetas.split(/[\s,]+/).filter(t => t.trim() !== '');
+            
+            for (const nombre of listaEtiquetas) {
+                const [etiquetaInst] = await Etiqueta.findOrCreate({ 
+                    where: { nombre: nombre.toLowerCase().trim() } 
+                });
+
+                // Inserto la relación manualmente
+                await TablaIntermedia.create({
+                    idpublicacion_fk: idpublicacion,
+                    idetiqueta_fk: etiquetaInst.idetiqueta 
+                });
+            }
+        }
+
+        res.redirect('/index');
+    } catch (error) {
+        console.error('Error al editar:', error);
+        res.status(500).send('Error al editar la publicación.');
+    }
+}
+
+export async function eliminarPublicacion(req, res) {
+    try {
+        const { idpublicacion } = req.params;
+        const idusuario = req.session.idusuario;
+
+        const pub = await Publicacion.findByPk(idpublicacion);
+        if (!pub) return res.status(404).send('Publicación no encontrada.');
+        if (pub.idusuario_fk !== idusuario) return res.status(403).send('No tenés permiso.');
+        if (pub.enRevision || pub.bajada) return res.status(403).send('No podés eliminar una publicación denunciada.');
+        
+        //borro etiquetas de tabla intermedia
+        await sequelize.models.publicacion_etiqueta.destroy({
+            where: { idpublicacion_fk: idpublicacion }
+        });
+        await pub.destroy();
+        res.redirect('/index');
+    } catch (error) {
+        console.error('Error al eliminar:', error);
+        res.status(500).send('Error al eliminar la publicación.');
     }
 }

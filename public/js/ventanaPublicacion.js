@@ -3,7 +3,7 @@ function nuevaPublicacion() {
     if (ventana) ventana.style.display = 'flex';
 }
 
-function cerrarNuevaPublicacion() {
+/*function cerrarNuevaPublicacion() {
     const ventana = document.getElementById('nuevaPublicacion');
     if (ventana) {
         ventana.style.display = 'none';
@@ -12,14 +12,14 @@ function cerrarNuevaPublicacion() {
         document.getElementById('contenedorInputsBase64').innerHTML = '';
         document.getElementById('previsualizacion').innerHTML = ''; 
     }
-}
+}*/  
 
-window.onclick = function(event) {
+/*window.onclick = function(event) {
     const ventana = document.getElementById('nuevaPublicacion');
     if (event.target == ventana) {
         cerrarVentana();
     }
-}
+}*/
 
 document.addEventListener('DOMContentLoaded', () => {
     const inputArchivo = document.getElementById('inputArchivo');
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('formPublicar').addEventListener('submit', function(e) {
         const titulo = this.querySelector('input[name="titulo"]').value.trim();
         const imagenes = contenedorInputs.querySelectorAll('textarea[name="imagenesBase64"]');
+        const esEdicion = this.action.includes('/editar');
 
         if (!titulo) {
             e.preventDefault();
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (imagenes.length === 0) {
+        if (imagenes.length === 0&& !esEdicion) {
             e.preventDefault();
             showToast('Debés agregar al menos una foto.', 'error');
             return;
@@ -140,4 +141,54 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-});
+}); 
+
+//PRUEBA EDITAR 
+
+function editarPublicacion(id, titulo, descripcion, etiquetas) {
+    const ventana = document.getElementById('nuevaPublicacion');
+    const form = document.getElementById('formPublicar');
+    
+    // cambiás el título del modal
+    ventana.querySelector('h2').textContent = 'Editar Publicación';
+    
+    // cargás los datos
+    form.querySelector('input[name="titulo"]').value = titulo;
+    form.querySelector('input[name="descripcion"]').value = descripcion;
+    form.querySelector('input[name="etiquetas"]').value = etiquetas;
+    
+    // cambiás el action del form al endpoint de editar
+    form.action = `/publicaciones/${id}/editar`;
+    
+    ventana.style.display = 'flex';
+}
+
+function cerrarNuevaPublicacion() {
+    const ventana = document.getElementById('nuevaPublicacion');
+    const form = document.getElementById('formPublicar');
+    if (ventana) {
+        ventana.style.display = 'none';
+        form.reset();
+        // restaurás el action original
+        form.action = '/publicar';
+        // restaurás el título
+        ventana.querySelector('h2').textContent = 'Nueva Publicación';
+        document.getElementById('contenedorInputsBase64').innerHTML = '';
+        document.getElementById('previsualizacion').innerHTML = '';
+    }
+}
+
+function abrirConfirmar(accion) {
+    document.getElementById('btnConfirmarEliminar').onclick = function() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = accion;
+        document.body.appendChild(form);
+        form.submit();
+    };
+    document.getElementById('modalConfirmar').style.display = 'flex';
+}
+
+function cerrarConfirmar() {
+    document.getElementById('modalConfirmar').style.display = 'none';
+}

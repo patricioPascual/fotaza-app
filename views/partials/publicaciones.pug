@@ -7,21 +7,30 @@ div.foto-card
     if pub.fotos && pub.fotos.length > 0
       each foto in pub.fotos
         div.foto-item(id=`foto-${foto.idfoto}`)
-         if esPublico
-           img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
-         else  
-          a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}', ${foto.dataValues.promedio || 0}, ${foto.dataValues.cantidadVotos || 0}, ${foto.dataValues.yaVoto}, ${foto.dataValues.esMia})` style="cursor:pointer;")
+          if esPublico
             img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
-          div.foto-stats
-            span.rating-actual ⭐ #{foto.dataValues.promedio ? parseFloat(foto.dataValues.promedio).toFixed(1) : '0'}
-            span (#{foto.dataValues.cantidadVotos || 0} votos)
+          else
+            a(onclick=`abrirComentarios(${foto.idfoto}, '${foto.archivo.toString('base64')}', ${foto.dataValues.promedio || 0}, ${foto.dataValues.cantidadVotos || 0}, ${foto.dataValues.yaVoto}, ${foto.dataValues.esMia})` style="cursor:pointer;")
+              img(src=`data:image/jpeg;base64,${foto.archivo.toString('base64')}` alt=pub.titulo style="width:100%; display:block;")
+            div.foto-stats
+              span.rating-actual ⭐ #{foto.dataValues.promedio ? parseFloat(foto.dataValues.promedio).toFixed(1) : '0'}
+              span (#{foto.dataValues.cantidadVotos || 0} votos)
     else
       img(src="/img/default.jpg" alt="Sin imagen disponible")
   
   div.card-body
     h3= pub.titulo
-    h4=pub.descripcion 
+    h4= pub.descripcion
     if pub.etiqueta && pub.etiqueta.length > 0
       p.foto-etiquetas
         each tag in pub.etiqueta
           span(style="margin-right: 8px;") #{'#' + tag.nombre}
+  
+  if !esPublico && pub.idusuario_fk === idusuarioLoggeado
+    div.card-actions-autor
+      if pub.enRevision || pub.bajada
+        span.badge-denunciada 🚫 Publicación denunciada — edición bloqueada
+      else
+        button.btn-editar(onclick=`editarPublicacion(${pub.idpublicacion}, '${pub.titulo}', '${pub.descripcion || ''}', '${pub.etiqueta ? pub.etiqueta.map(e => e.nombre).join(', ') : ''}')`) ✏️ Editar
+        form(action=`/publicaciones/${pub.idpublicacion}/eliminar` method="POST" style="display:inline;")
+          button.btn-eliminar(type="button" onclick=`abrirConfirmar('/publicaciones/${pub.idpublicacion}/eliminar')`) 🗑️ Eliminar
