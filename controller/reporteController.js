@@ -3,6 +3,7 @@ import { Foto } from '../models/Foto.js';
 import { Comentario } from '../models/Comentario.js';
 import { Publicacion } from '../models/Publicacion.js';
 import { Usuario } from '../models/Usuario.js';
+import { crearNotificacion } from './notificacionController.js';
 
 export async function crearReporte(req, res) {
     try {
@@ -12,7 +13,11 @@ export async function crearReporte(req, res) {
         if (!tipo || !idreferencia || !motivo) {
             return res.status(400).json({ error: 'Faltan datos requeridos.' });
         }
+       
 
+        //declaracion var glob 
+        let foto = null;
+        let comentario = null;
    //verico que no haya reportado el mismo elemento
         const reporteExistente = await Reporte.findOne({
             where: { idusuario_fk, idreferencia, tipo }
@@ -22,7 +27,7 @@ export async function crearReporte(req, res) {
         }
 
         if (tipo === 'foto') {
-            const foto = await Foto.findByPk(idreferencia, {
+             foto = await Foto.findByPk(idreferencia, {
                 include: [{ model: Publicacion }]
             });
             if (!foto) return res.status(404).json({ error: 'Foto no encontrada.' });
@@ -30,7 +35,7 @@ export async function crearReporte(req, res) {
                 return res.status(403).json({ error: 'No podés reportar tu propia foto.' });
             }
         } else if (tipo === 'comentario') {
-            const comentario = await Comentario.findByPk(idreferencia);
+             comentario = await Comentario.findByPk(idreferencia);
             if (!comentario) return res.status(404).json({ error: 'Comentario no encontrado.' });
             if (comentario.idusuario_fk === idusuario_fk) {
                 return res.status(403).json({ error: 'No podés reportar tu propio comentario.' });
@@ -38,7 +43,22 @@ export async function crearReporte(req, res) {
         }
 
         await Reporte.create({ tipo, idreferencia, motivo, descripcion, idusuario_fk });
+         //NOtificacion 
+         let idUsuarioDestino;
 
+// uso las variables que ya existes foto y comentario
+if (tipo === 'foto') {
+   
+    idUsuarioDestino = foto.publicacion.idusuario_fk;
+} else if (tipo === 'comentario') {
+    
+    idUsuarioDestino = comentario.idusuario_fk;
+}
+
+
+if (idUsuarioDestino) {
+    await crearNotificacion('reporte', idusuario_fk, idUsuarioDestino, idreferencia);
+}
         // contar reportes únicos por usuario para esta foto
         if (tipo === 'foto') {
             const cantidadReportes = await Reporte.count({   //para que no traiga los desestimados
@@ -49,9 +69,9 @@ export async function crearReporte(req, res) {
 
             if (cantidadReportes >= 3) {
                 // buscar la publicacion que contiene esta foto
-                const foto = await Foto.findByPk(idreferencia, {
+               /**  const foto = await Foto.findByPk(idreferencia, {
                     include: [{ model: Publicacion }]
-                });
+                });*/
                 await foto.publicacion.update({ enRevision: true });
             }
         }
@@ -124,14 +144,31 @@ export async function desestrimarReportes(req, res) {
 }
 export async function getPublicacionesEnRevision(req, res) {
     try {
+        // traer IDs de fotos con reportes pendientes
+        const fotosConReportes = await Reporte.findAll({
+            where: { tipo: 'foto', estado: 'pendiente' },
+            attributes: ['idreferencia'],
+            group: ['idreferencia']
+        });
+        
+        const idsFotos = fotosConReportes.map(r => r.idreferencia);
+        
+        if (idsFotos.length === 0) {
+            return res.render('adminRevisiones', { publicaciones: [] });
+        }
+
+        // traer publicaciones que tengan esas fotos
         const publicaciones = await Publicacion.findAll({
-            where: { enRevision: true, bajada: false },
+            where: { bajada: false },
             include: [
                 { model: Usuario, attributes: ['nombre'] },
                 { 
                     model: Foto,
+                    where: { idfoto: idsFotos },
+                    required: true,
                     include: [{
                         model: Reporte,
+                        where: { estado: 'pendiente', tipo: 'foto' },
                         required: false,
                         include: [{ model: Usuario, attributes: ['nombre'] }]
                     }]
@@ -139,6 +176,14 @@ export async function getPublicacionesEnRevision(req, res) {
             ],
             order: [['createdAt', 'DESC']]
         });
+
+        for (const pub of publicaciones) {
+            let totalReportes = 0;
+            for (const foto of pub.fotos) {
+                totalReportes += foto.reportes ? foto.reportes.length : 0;
+            }
+            pub.dataValues.totalReportes = totalReportes;
+        }
 
         res.render('adminRevisiones', { publicaciones });
     } catch (error) {

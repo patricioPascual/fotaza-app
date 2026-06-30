@@ -1,0 +1,33 @@
+/* 1. Contenedor principal que envuelve todo el bloque de mensajes */
+.chat-wrapper {
+    position: relative; /* Contexto para posicionar cosas dentro */
+    height: 80vh;       /* Ajusta según cuánto espacio quieras ocupar */
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+/* 2. Encabezado del chat fijo para que no se mueva al hacer scroll */
+.chat-header {
+    background: white;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 3. El contenedor de los mensajes: AQUÍ ESTÁ EL TRUCO DEL SCROLL */
+.chat-container {
+    flex-grow: 1;           /* Ocupa todo el espacio disponible */
+    overflow-y: auto;       /* El scroll solo ocurre aquí adentro */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+/* 4. Formulario fijo abajo (opcional, si quieres que siempre esté visible) */
+.form-chat {
+    padding: 15px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}

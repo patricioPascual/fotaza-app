@@ -33,7 +33,7 @@ export async function registrarUsuario(req, res) {
         });
 
     } catch (error) {
-       
+       console.log("DETALLE DEL ERROR:", error); 
         let errorEmail={} 
         let msjError = "Hubo un problema en el servidor.";
         if (error.name === 'SequelizeUniqueConstraintError') {

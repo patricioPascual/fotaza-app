@@ -1,0 +1,30 @@
+extends layout
+
+block head
+  title Fotaza - Chat con #{destino.nombre}
+  link(rel="stylesheet", href="/css/Style.css")
+  link(rel="stylesheet",href="/css/chat.css")
+block main_content
+  div.container-principal
+    include partials/sidebar
+
+    main#muro-principal
+      header.chat-header
+        h2 Conversación con 
+          a(href=`/perfil/${destino.nombre}`) #{destino.nombre}
+      
+      div.chat-container
+        if mensajes && mensajes.length > 0
+          each msg in mensajes
+            // Si el id_emisor es miId, es un mensaje mío (clase 'mio')
+            div(class=msg.idusuarioem_fk === miId ? 'mensaje-item mio' : 'mensaje-item otro')
+              p.mensaje-texto= msg.texto
+              span.mensaje-fecha= new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        else
+          p.sin-mensajes No hay mensajes previos. ¡Inicia la conversación!
+
+      form.form-chat(action="/mensajes/enviar" method="POST")
+        input(type="hidden" name="id_receptor" value=destino.idusuario)
+        input(type="hidden" name="nombre_destino" value=destino.nombre)
+        textarea(name="texto" placeholder="Escribe un mensaje..." required rows="2")
+        button.btn-enviar(type="submit") 📩 Enviar

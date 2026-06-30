@@ -1,3 +1,5 @@
+
+
 div.foto-card
   div.card-header
     a.username(href=`/perfil/${pub.usuario.nombre}`) #{pub.usuario.nombre}
@@ -25,10 +27,26 @@ div.foto-card
       p.foto-etiquetas
         each tag in pub.etiqueta
           span(style="margin-right: 8px;") #{'#' + tag.nombre}
+
+    //Solo visible si no es publico
+    if !esPublico
+      button.btn-toggle-coleccion(type="button" onclick="toggleColeccion(this)") 📁 Guardar
+      form.form-colecciones.oculto(action="/colecciones/agregar" method="POST")
+        input(type="hidden" name="idPublicacion" value=pub.idpublicacion)
+        select.select-coleccion(name="idColeccion" onchange="checkNueva(this)")
+          //- Verificamos que 'colecciones' exista antes de iterar
+          if typeof colecciones !== 'undefined' && colecciones && colecciones.length > 0
+            each col in colecciones
+              option(value=col.idcoleccion)= col.nombre
+          option(value="nueva") + Crear nueva...
+        input.input-nueva(type="text" name="nuevoNombre" placeholder="Nombre nueva colección" style="display:none;")
+        button.btn-guardar(type="submit") Confirmar
   
   if !esPublico && pub.idusuario_fk === idusuarioLoggeado
     div.card-actions-autor
-      if pub.enRevision || pub.bajada
+      - const tieneReportes = pub.fotos.some(f => f.tieneReportes);
+      
+      if pub.enRevision || pub.bajada || tieneReportes
         span.badge-denunciada 🚫 Publicación denunciada — edición bloqueada
       else
         button.btn-editar(onclick=`editarPublicacion(${pub.idpublicacion}, '${pub.titulo}', '${pub.descripcion || ''}', '${pub.etiqueta ? pub.etiqueta.map(e => e.nombre).join(', ') : ''}')`) ✏️ Editar

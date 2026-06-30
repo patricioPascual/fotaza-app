@@ -7,7 +7,7 @@ import { Etiqueta } from '../models/Etiqueta.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import { Rol } from '../models/Rol.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 console.log('Archivo seeds cargado');

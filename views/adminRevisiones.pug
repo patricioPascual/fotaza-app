@@ -3,6 +3,7 @@ extends layout
 block head
   title Fotaza - Panel Admin
   link(rel="stylesheet", href="/css/Style.css")
+  link(rel="stylesheet", href="/css/notificaciones.css")
 
 block main_content
   div.container-principal
@@ -13,27 +14,33 @@ block main_content
 
       if publicaciones && publicaciones.length > 0
         each pub in publicaciones
-          div.notif-item
+          div.notif-item(style="flex-direction: column; align-items: flex-start;")
+            
             div.notif-contenido
               strong= pub.usuario.nombre
               span  — #{pub.titulo}
-            
+              if pub.enRevision
+                span.badge-nuevo En revisión
+              span.badge-nuevo(style="background:#e67e22;") #{pub.dataValues.totalReportes} reporte(s)
+
             each foto in pub.fotos
               if foto.reportes && foto.reportes.length > 0
-                div.reportes-lista
-                  p.comentario-fecha Reportes (#{foto.reportes.length}):
+                div.reportes-lista(style="width:100%; margin-top:10px;")
                   each rep in foto.reportes
-                    div.reporte-item
-                      strong= rep.usuario.nombre
-                      span  — #{rep.motivo}
+                    div.comentario-item
+                      div.notif-contenido
+                        strong= rep.usuario.nombre
+                        span.badge-denunciada  #{rep.motivo}
                       if rep.descripcion
                         p.comentario-texto= rep.descripcion
+                      small.comentario-fecha= new Date(rep.createdAt).toLocaleDateString()
 
-            div.notif-meta
+            div.notif-meta(style="margin-top:10px;")
               small.comentario-fecha= new Date(pub.createdAt).toLocaleDateString()
-              form(action=`/reportes/admin/${pub.idpublicacion}/bajar` method="POST" style="display:inline;")
-                button(type="submit") 🚫 Dar de baja
+              if pub.dataValues.totalReportes >= 3
+                form(action=`/reportes/admin/${pub.idpublicacion}/bajar` method="POST" style="display:inline;")
+                  button.btn-eliminar(type="submit") 🚫 Dar de baja
               form(action=`/reportes/admin/${pub.idpublicacion}/desestimar` method="POST" style="display:inline;")
-                button(type="submit") ✅ Desestimar
+                button.btn-editar(type="submit") ✅ Desestimar
       else
         p.comentario-vacio No hay publicaciones en revisión.

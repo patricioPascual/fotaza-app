@@ -14,7 +14,8 @@ import { requireAuth } from './middlewares/auth.js';
 import notificacionRouter from './routes/notificacion.js';
 import reporteRouter from './routes/reporte.js';
 import publicoRouter from './routes/publico.js';
-
+import mensajeRoutes from './routes/mensaje.js';
+import coleccionRoutes from './routes/coleccion.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -66,8 +67,8 @@ app.use('/comentarios', requireAuth, comentarioRoutes);
 app.use('/notificaciones', requireAuth, notificacionRouter);
 app.use('/', requireAuth, publicacionRouter);
 app.use('/', requireAuth, valoracionRouter);
-
-
+app.use('/',requireAuth, mensajeRoutes);
+app.use('/',requireAuth,coleccionRoutes);
 
 sequelize.sync({alter:true})
     .then(() => {

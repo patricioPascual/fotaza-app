@@ -1,0 +1,18 @@
+extends layout
+block head
+  title Fotaza - Coleccion 
+  link(rel="stylesheet", href="/css/Style.css")
+block main_content
+  div.container-principal
+    include partials/sidebar
+    
+    main#muro-principal
+      h1 📁 Colección: #{nombreColeccion}
+      a(href="/colecciones") ← Volver a mis colecciones
+      
+      if publicaciones && publicaciones.length > 0
+        div.resultados
+          each pub in publicaciones
+            include partials/publicaciones
+      else
+        p Esta colección está vacía.

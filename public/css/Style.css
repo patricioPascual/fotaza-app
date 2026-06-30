@@ -430,3 +430,14 @@ a.username:hover {
     justify-content: flex-end;
     margin-top: 15px;
 }
+
+/*Colecion--*/ 
+.form-colecciones.oculto {
+    display: none;
+}
+
+/* Opcional: un poco de espaciado */
+.btn-toggle-coleccion {
+    margin-top: 10px;
+    cursor: pointer;
+}

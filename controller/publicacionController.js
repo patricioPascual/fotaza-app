@@ -6,7 +6,8 @@ import { Etiqueta } from '../models/Etiqueta.js';
 import { calcularPromedioPorFoto , usuarioYaVoto} from './valoracionController.js';
 import { aplicarMarcaAgua } from './fotoController.js';
 import sequelize from '../db.js';
-
+import { Reporte } from '../models/Reporte.js';
+import { Coleccion } from '../models/Coleccion.js';
 const condicionActiva = { bajada: false };
 
 export async function crearPublicacion(req, res) {
@@ -74,34 +75,33 @@ export async function traerAllPublicaciones(req, res) {
     try {
         const idusuarioLoggeado = req.session.idusuario;
 
+        //colecciones para pasar ala vista
+        const colecciones = await Coleccion.findAll({
+            where: { idusuario_fk: idusuarioLoggeado }
+        });
+
+        
         const publicaciones = await Publicacion.findAll({
             where: condicionActiva,
-            include: [
-                { model: Foto },
-                { model: Usuario },
-                { model: Etiqueta }
-            ],
+            include: [{ model: Foto }, { model: Usuario }, { model: Etiqueta }],
             order: [['createdAt', 'DESC']]
         });
 
-        for (const pub of publicaciones) {
-            for (const foto of pub.fotos) {
-                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
-                foto.dataValues.promedio = promedio;
-                foto.dataValues.cantidadVotos = cantidadVotos;
-                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
-                foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
-                
-            }
-        }
+        // uso la funcion 
+        await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
 
-        res.render('index', { publicaciones });
+        
+        res.render('index', { 
+            publicaciones, 
+            colecciones, 
+            idusuarioLoggeado 
+        });
+
     } catch (error) {
-        console.log("error cargando publicaciones", error);
+        console.error("Error cargando muro:", error);
         res.status(500).send("Error al cargar el muro");
     }
 }
-
 export async function traerPublicacionesDeSeguidos(req, res) {
     try {
         const idusuarioLoggeado = req.session.idusuario;
@@ -116,10 +116,7 @@ export async function traerPublicacionesDeSeguidos(req, res) {
         const idsSeguidos = seguidos.map(u => u.idusuario);
 
         const publicaciones = await Publicacion.findAll({
-            where: { 
-                idusuario_fk: idsSeguidos,
-                bajada: false
-            },
+            where: { idusuario_fk: idsSeguidos, bajada: false },
             include: [
                 { model: Foto },
                 { model: Usuario },
@@ -128,15 +125,7 @@ export async function traerPublicacionesDeSeguidos(req, res) {
             order: [['createdAt', 'DESC']]
         });
 
-        for (const pub of publicaciones) {
-            for (const foto of pub.fotos) {
-                const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
-                foto.dataValues.promedio = promedio;
-                foto.dataValues.cantidadVotos = cantidadVotos;
-                foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idusuarioLoggeado);
-                foto.dataValues.esMia = pub.idusuario_fk === idusuarioLoggeado;
-            }
-        }
+        await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
 
         res.render('siguiendo', { publicaciones, sinSeguidos: false });
     } catch (error) {
@@ -144,7 +133,6 @@ export async function traerPublicacionesDeSeguidos(req, res) {
         res.status(500).send("Error al cargar el feed");
     }
 }
-
 //anonimos 
 export async function traerPublicacionesPublicas(req, res) {
     try {
@@ -178,42 +166,42 @@ export async function traerPublicacionesPublicas(req, res) {
 } 
 
 //PRUEBA EDICION 
-    export async function editarPublicacion(req, res) {
+   export async function editarPublicacion(req, res) {
     try {
         const { idpublicacion } = req.params;
         const { titulo, descripcion, etiquetas } = req.body;
         const idusuario = req.session.idusuario;
 
-        const pub = await Publicacion.findByPk(idpublicacion);
+        const pub = await Publicacion.findByPk(idpublicacion, {
+            include: [{ model: Foto }]
+        });
         if (!pub) return res.status(404).send('Publicación no encontrada.');
         if (pub.idusuario_fk !== idusuario) return res.status(403).send('No tenés permiso.');
         if (pub.enRevision || pub.bajada) return res.status(403).send('No podés editar una publicación denunciada.');
 
-        // 1. Actualizo datos basico
+        // verificar si alguna foto tiene reportes pendientes
+        const idsFotos = pub.fotos.map(f => f.idfoto);
+        const reportesPendientes = await Reporte.count({
+            where: { tipo: 'foto', idreferencia: idsFotos, estado: 'pendiente' }
+        });
+        if (reportesPendientes > 0) {
+            return res.status(403).send('No podés editar una publicación con denuncias pendientes.');
+        }
+
         await pub.update({ titulo, descripcion });
 
-        // 2. Actualizo etiquetas manualmente en tabla intermedia
-        // Use el nombre real de la tabla en la DB
         const TablaIntermedia = sequelize.models.publicacion_etiqueta;
+        await TablaIntermedia.destroy({ where: { idpublicacion_fk: idpublicacion } });
 
-        // Borro todas las relaciones actuales de esta publicacion
-        await TablaIntermedia.destroy({
-            where: { idpublicacion_fk: idpublicacion }
-        });
-
-        // Si hay nuevas etiquetas, las proceso e inserto
         if (etiquetas && etiquetas.trim() !== '') {
             const listaEtiquetas = etiquetas.split(/[\s,]+/).filter(t => t.trim() !== '');
-            
             for (const nombre of listaEtiquetas) {
-                const [etiquetaInst] = await Etiqueta.findOrCreate({ 
-                    where: { nombre: nombre.toLowerCase().trim() } 
+                const [etiquetaInst] = await Etiqueta.findOrCreate({
+                    where: { nombre: nombre.toLowerCase().trim() }
                 });
-
-                // Inserto la relación manualmente
                 await TablaIntermedia.create({
                     idpublicacion_fk: idpublicacion,
-                    idetiqueta_fk: etiquetaInst.idetiqueta 
+                    idetiqueta_fk: etiquetaInst.idetiqueta
                 });
             }
         }
@@ -230,12 +218,22 @@ export async function eliminarPublicacion(req, res) {
         const { idpublicacion } = req.params;
         const idusuario = req.session.idusuario;
 
-        const pub = await Publicacion.findByPk(idpublicacion);
+        const pub = await Publicacion.findByPk(idpublicacion, {
+            include: [{ model: Foto }]
+        });
         if (!pub) return res.status(404).send('Publicación no encontrada.');
         if (pub.idusuario_fk !== idusuario) return res.status(403).send('No tenés permiso.');
         if (pub.enRevision || pub.bajada) return res.status(403).send('No podés eliminar una publicación denunciada.');
-        
-        //borro etiquetas de tabla intermedia
+
+        // verificar si alguna foto tiene reportes pendientes
+        const idsFotos = pub.fotos.map(f => f.idfoto);
+        const reportesPendientes = await Reporte.count({
+            where: { tipo: 'foto', idreferencia: idsFotos, estado: 'pendiente' }
+        });
+        if (reportesPendientes > 0) {
+            return res.status(403).send('No podés eliminar una publicación con denuncias pendientes.');
+        }
+
         await sequelize.models.publicacion_etiqueta.destroy({
             where: { idpublicacion_fk: idpublicacion }
         });
@@ -245,4 +243,36 @@ export async function eliminarPublicacion(req, res) {
         console.error('Error al eliminar:', error);
         res.status(500).send('Error al eliminar la publicación.');
     }
+}
+export async function enriquecerPublicaciones(publicaciones, idUsuarioLoggeado) {
+    if (!publicaciones || !Array.isArray(publicaciones)) {
+        return [];
+    }
+    for (const pub of publicaciones) {
+        let sumaPromedios = 0;
+        let totalVotos = 0;
+
+        for (const foto of pub.fotos) {
+            // Reportes
+            const reportes = await Reporte.count({ where: { idreferencia: foto.idfoto, tipo: 'foto' } });
+            foto.tieneReportes = reportes > 0;
+
+            // Valoraciones
+            const { promedio, cantidadVotos } = await calcularPromedioPorFoto(foto.idfoto);
+            foto.dataValues.promedio = promedio || 0;
+            foto.dataValues.cantidadVotos = cantidadVotos || 0;
+            
+            sumaPromedios += (promedio || 0);
+            totalVotos += (cantidadVotos || 0);
+
+            foto.dataValues.yaVoto = await usuarioYaVoto(foto.idfoto, idUsuarioLoggeado);
+            foto.dataValues.esMia = pub.idusuario_fk === idUsuarioLoggeado;
+        }
+
+        // Calculo score para ordenamiento
+        pub.dataValues.score = totalVotos + ((sumaPromedios / (pub.fotos.length || 1)) * 10);
+    }
+    
+    // Ordenar 
+    return publicaciones.sort((a, b) => b.dataValues.score - a.dataValues.score);
 }

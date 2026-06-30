@@ -21,8 +21,14 @@ block main_content
                 when 'interes'
                   span  está interesado en tu foto
                   a.notif-link(href=`/mensajes/${notif.Emisor.nombre}`) Enviar mensaje
+                when 'mensaje'
+                  span  te envio un Mensaje
+                  a.notif-link(href=`/mensajes/${notif.Emisor.nombre}`) Enviar mensaje
                 when 'comentario'
                   span  comentó tu foto
+                  a.notif-link(href=`/index#foto-${notif.idreferencia}`) 🖼️ Ver foto
+                when 'reporte'
+                  span  reporto tu foto
                   a.notif-link(href=`/index#foto-${notif.idreferencia}`) 🖼️ Ver foto
                 when 'valoracion'
                   span  valoró tu foto

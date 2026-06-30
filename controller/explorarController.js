@@ -3,12 +3,18 @@ import { Foto } from '../models/Foto.js';
 import { Usuario } from '../models/Usuario.js'
 import { Etiqueta } from '../models/Etiqueta.js';
 import { Op } from 'sequelize';
-
+import { enriquecerPublicaciones } from './publicacionController.js';
+import { Coleccion } from '../models/Coleccion.js';
 const condicionActiva = { bajada: false };
 
 export async function traerPublicacionesByTag(req, res) {
     try {
         const { etiqueta } = req.params; 
+         const idusuarioLoggeado = req.session.idusuario;
+
+         const colecciones = await Coleccion.findAll({
+            where: { idusuario_fk: idusuarioLoggeado }
+        });
 
         const publicaciones = await Publicacion.findAll({
             where: condicionActiva,
@@ -23,8 +29,12 @@ export async function traerPublicacionesByTag(req, res) {
             ],
             order: [['createdAt', 'DESC']]
         });
-
-        res.render('explorar', { publicaciones });
+         await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
+        res.render('explorar', { 
+            publicaciones, 
+            colecciones, 
+            idusuarioLoggeado 
+        });
     } catch (error) {
         console.log("Error cargando publicaciones por tag:", error);
         res.status(500).send("Error al cargar el muro");
@@ -34,10 +44,16 @@ export async function traerPublicacionesByTag(req, res) {
 
 export async function traerPublicacionesByUser(req,res) {
     try{
+        const idusuarioLoggeado = req.session.idusuario;
         const {nombreUsuario}=req.params;
+
+        const colecciones = await Coleccion.findAll({
+            where: { idusuario_fk: idusuarioLoggeado }
+        });
         const publicaciones= await buscarPublicacionesPorUsuario(nombreUsuario);
-       
-        res.render('explorar', {publicaciones});
+
+        await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
+        res.render('explorar', {publicaciones,colecciones,idusuarioLoggeado});
        
     }catch(error){
         console.log("error cargando publicaciones",error);
@@ -84,6 +100,11 @@ export async function buscarPublicacionesPorUsuario(nombreUsuario) {
 
 export async function buscarPublicacionesGeneral(req, res) {
     const { criterio } = req.query; 
+    const idusuarioLoggeado = req.session.idusuario;
+    
+    const colecciones = await Coleccion.findAll({
+            where: { idusuario_fk: idusuarioLoggeado }
+        });
 
     if (!criterio) return res.redirect('/explorar');
 
@@ -122,8 +143,8 @@ export async function buscarPublicacionesGeneral(req, res) {
             ],
             order: [['createdAt', 'DESC']]
         });
-
-        res.render('explorar', { publicaciones, criterio });
+        await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
+        res.render('explorar', { publicaciones, criterio,colecciones,idusuarioLoggeado });
     } catch (error) {
         console.error("Error en búsqueda:", error);
         res.status(500).send("Error al buscar");
@@ -132,6 +153,10 @@ export async function buscarPublicacionesGeneral(req, res) {
 
 export async function busquedaCombinada(req, res) {
     const { criterio } = req.query; 
+    const idusuarioLoggeado = req.session.idusuario;
+    const colecciones = await Coleccion.findAll({
+            where: { idusuario_fk: idusuarioLoggeado }
+        });
 
     if (!criterio || criterio.trim() === "") {
         return res.redirect('/explorar');
@@ -165,8 +190,8 @@ export async function busquedaCombinada(req, res) {
             ],
             order: [['createdAt', 'DESC']]
         });
-
-        res.render('explorar', { publicaciones, criterio });
+        await enriquecerPublicaciones(publicaciones, idusuarioLoggeado);
+        res.render('explorar', { publicaciones, criterio,colecciones,idusuarioLoggeado });
     } catch (error) {
         console.error("Error en búsqueda:", error);
         res.status(500).send("Error al cargar la búsqueda");

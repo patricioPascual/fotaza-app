@@ -50,16 +50,22 @@ Comentario.hasMany(Reporte, { foreignKey: 'idreferencia', scope: { tipo: 'coment
 Reporte.belongsTo(Comentario, { foreignKey: 'idreferencia', constraints: false });
 
 
+
 Coleccion.belongsToMany(Publicacion, { 
     through: ColeccionPublicacion, 
     foreignKey: 'idcoleccion_fk', 
-    otherKey: 'idpublicacion_fk' 
+    otherKey: 'idpublicacion_fk',
+    
 });
 Publicacion.belongsToMany(Coleccion, { 
     through: ColeccionPublicacion, 
     foreignKey: 'idpublicacion_fk', 
-    otherKey: 'idcoleccion_fk' 
+    otherKey: 'idcoleccion_fk',
+    
+
 });
+
+
 
 
 Usuario.belongsToMany(Usuario, { 
