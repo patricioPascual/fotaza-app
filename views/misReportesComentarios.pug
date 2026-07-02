@@ -1,0 +1,41 @@
+extends layout
+
+block head
+  title Fotaza - Reportes de Comentarios
+  link(rel="stylesheet", href="/css/Style.css")
+  link(rel="stylesheet", href="/css/notificaciones.css")
+
+block main_content
+  div.container-principal
+    include partials/sidebar
+    
+    main#muro-principal
+      h2 Comentarios denunciados en mis publicaciones
+
+      if reportes && reportes.length > 0
+        each rep in reportes
+          div.notif-item(style="flex-direction: column; align-items: flex-start;")
+            
+            div.notif-contenido
+              strong Publicación:
+              span  — #{rep.comentario.foto.publicacion.titulo}
+            
+            div.reportes-lista(style="width:100%; margin-top:10px;")
+              div.comentario-item
+                div.notif-contenido
+                  strong Comentario de #{rep.comentario.usuario.nombre}:
+                  span.comentario-texto  "#{rep.comentario.texto}"
+                div.notif-contenido(style="margin-top:5px;")
+                  strong Motivo:
+                  span.badge-denunciada  #{rep.motivo}
+                if rep.descripcion
+                  p.comentario-texto= rep.descripcion
+                small.comentario-fecha= new Date(rep.createdAt).toLocaleDateString()
+            
+            div.notif-meta(style="margin-top:10px;")
+              form(action=`/reportes/comentarios/${rep.idreporte}/desestimar` method="POST" style="display:inline;")
+                button.btn-editar(type="submit") ✅ Desestimar
+              form(action=`/reportes/comentarios/${rep.comentario.idcomentario}/borrar` method="POST" style="display:inline;")
+                button.btn-eliminar(type="submit") 🗑️ Eliminar comentario
+      else
+        p.comentario-vacio No tenés comentarios denunciados.

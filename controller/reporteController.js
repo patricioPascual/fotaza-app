@@ -189,4 +189,77 @@ export async function getPublicacionesEnRevision(req, res) {
     } catch (error) {
         res.status(500).send('Error al cargar revisiones: ' + error.message);
     }
+} 
+
+export async function getReportesComentariosPropios(req, res) {
+    try {
+        const idUsuarioLogueado = req.session.idusuario;
+
+        const reportes = await Reporte.findAll({
+            where: { tipo: 'comentario', estado: 'pendiente' },
+            include: [{
+                model: Comentario,
+                required: true, // Obligatorio: debe existir el comentario
+                include: [
+                    {
+                        model: Foto,
+                        required: true, // Obligatorio: el comentario debe estar en una foto
+                        include: [{
+                            model: Publicacion,
+                            required: true, // Obligatorio: la foto debe pertenecer a una publicacion TUYA
+                            where: { idusuario_fk: idUsuarioLogueado }
+                        }]
+                    }, 
+                    {
+                        model: Usuario, 
+                        attributes: ['nombre']
+                    }
+                ]
+            }],
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.render('misReportesComentarios', { reportes });
+    } catch (error) {
+        res.status(500).send('Error al cargar reportes: ' + error.message);
+    }
+}
+
+export async function borrarComentarioAutor(req, res) {
+    try {
+        console.log("Parámetros recibidos:", req.params);
+        const idParam = req.params.idComentario;
+        const idusuario = req.session.idusuario;
+      
+        console.log("ID capturado desde params:", idParam);
+        const comentario = await Comentario.findByPk(idParam, {
+            include: [{ model: Foto, include: [{ model: Publicacion }] }]
+        });
+          if (!comentario) {
+            console.error("No se encontró el comentario en la DB");
+            return res.status(404).json({ error: 'Comentario no encontrado.' });
+        }
+        if (!comentario) return res.status(404).send('Comentario no encontrado.');
+        if (comentario.foto.publicacion.idusuario_fk !== idusuario) {
+            return res.status(403).send('No tenés permiso.');
+        }
+
+        await comentario.destroy();
+        res.redirect('/reportes/mis-comentarios');
+    } catch (error) {
+        console.error("Error en borrarComentarioAutor:", error);
+        res.status(500).send('Error: ' + error.message);
+    }
+}
+export async function desestimarReporteComentario(req, res) {
+    try {
+        const { idcomentario } = req.params;
+        await Reporte.update(
+            { estado: 'ignorado' },
+            { where: { tipo: 'comentario', idreferencia: idcomentario } }
+        );
+        res.redirect('/reportes/mis-comentarios');
+    } catch (error) {
+        res.status(500).send('Error: ' + error.message);
+    }
 }
