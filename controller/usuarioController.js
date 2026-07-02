@@ -92,7 +92,7 @@ export async function autenticarUsuario(req, res) {
         
         req.session.idusuario = usuario.idusuario;
         req.session.nombre = usuario.nombre;
-        req.session.isAdmin = (usuario.rol && usuario.rol.nombre === 'admin');
+        req.session.isAdmin = (usuario.rol && usuario.rol.nombre === 'Admin');
         
         res.redirect('/index');
     } catch (error) {

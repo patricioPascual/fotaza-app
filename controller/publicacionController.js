@@ -8,6 +8,8 @@ import { aplicarMarcaAgua } from './fotoController.js';
 import sequelize from '../db.js';
 import { Reporte } from '../models/Reporte.js';
 import { Coleccion } from '../models/Coleccion.js';
+
+
 const condicionActiva = { bajada: false };
 
 export async function crearPublicacion(req, res) {
@@ -254,7 +256,7 @@ export async function enriquecerPublicaciones(publicaciones, idUsuarioLoggeado) 
 
         for (const foto of pub.fotos) {
             // Reportes
-            const reportes = await Reporte.count({ where: { idreferencia: foto.idfoto, tipo: 'foto' } });
+            const reportes = await Reporte.count({ where: { idreferencia: foto.idfoto, tipo: 'foto' ,estado:'pendiente'} });
             foto.tieneReportes = reportes > 0;
 
             // Valoraciones
