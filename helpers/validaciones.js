@@ -24,3 +24,19 @@ const USER = z.object({
  export function validarUsuario(usuario) {  
   return USER.safeParse(usuario);
 }
+
+
+ const Comentario = z.object({
+    body: z.object({
+        texto: z.string()
+            .trim()
+            .min(1, "El comentario no puede estar vacio")
+            .max(500, "Máximo 500 caracteres")
+            .refine(val => !/<[^>]*>/g.test(val), {
+                message: "No se permiten etiquetas HTML en los comentarios."
+            })
+    })
+});
+export function validarComentario(comentario) {  
+  return Comentario.safeParse(comentario);
+}
