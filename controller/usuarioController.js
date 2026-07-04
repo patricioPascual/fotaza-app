@@ -67,8 +67,7 @@ export async function autenticarUsuario(req, res) {
 
         if (!usuario) {
             return res.render('login', {
-                alert: { status: 'error', text: "El usuario no existe" },
-                errores: { email: ["el usuario no existe"] },
+                alert: { status: 'error', text: "Usuario o contraseña incorrectos" },
                 datos: { email }
             });
         }
@@ -77,14 +76,13 @@ export async function autenticarUsuario(req, res) {
 
         if (!passwordValida) {
             return res.render('login', {
-                alert: { status: 'error', text: "Contraseña incorrecta" },
-                errores: { password: ["Contraseña incorrecta"] },
+                alert: { status: 'error', text: "Usuario o contraseña Incorrectos" },
                 datos: { email }
             });
         }
        if (!usuario.estado) {
     return res.render('login', {
-        alert: { status: 'error', text: "Tu cuenta está inactiva." },
+        alert: { status: 'error', text: "Tu cuenta esta inactiva." },
         errores: {},
         datos: { email }
     });
