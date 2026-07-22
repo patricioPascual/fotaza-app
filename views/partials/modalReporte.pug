@@ -3,7 +3,7 @@ div#modalReporte.ventana(style="display:none;")
     div(style="display:flex; justify-content:space-between; align-items:center;")
       h2 Reportar
       button(onclick="cerrarReporte()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;") ✕
-    form#formReporte
+    form#formReporte(novalidate)
       input(type="hidden" id="reporteTipo")
       input(type="hidden" id="reporteIdReferencia")
       label(for="motivo") Motivo

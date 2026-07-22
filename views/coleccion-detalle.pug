@@ -13,6 +13,9 @@ block main_content
       if publicaciones && publicaciones.length > 0
         div.resultados
           each pub in publicaciones
+           div.card-contenedor-coleccion(id=`pub-en-col-${pub.idpublicacion}`)
             include partials/publicaciones
+            div(style="margin-top: 5px; margin-bottom: 20px; text-align: right;")
+                button.btn-eliminar(type="button" onclick=`quitarDeColeccion(${idColeccion}, ${pub.idpublicacion})`) ❌ Quitar de la colección
       else
         p Esta colección está vacía.

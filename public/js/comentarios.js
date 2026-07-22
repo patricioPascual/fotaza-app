@@ -163,12 +163,23 @@ function cerrarReporte() {
 
 document.getElementById('formReporte').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = {
-        tipo: document.getElementById('reporteTipo').value,
-        idreferencia: document.getElementById('reporteIdReferencia').value,
-        motivo: document.getElementById('motivo').value,
-        descripcion: document.getElementById('descripcion').value
-    };
+
+    const motivo = document.getElementById('motivo').value;
+    const descripcion = document.getElementById('descripcion').value;
+    const tipo = document.getElementById('reporteTipo').value;
+    const idreferencia = document.getElementById('reporteIdReferencia').value;
+
+  
+    if (!motivo) {
+        showToast('Por favor, seleccioná un motivo.', 'error');
+        return;
+    }
+    
+    if (!descripcion.trim()) {
+        showToast('Por favor, escribí una descripción.', 'error');
+        return;
+    }
+   const data = { tipo, idreferencia, motivo, descripcion };
 
     try {
         const res = await fetch('/reportes', {

@@ -149,15 +149,15 @@ function editarPublicacion(id, titulo, descripcion, etiquetas) {
     const ventana = document.getElementById('nuevaPublicacion');
     const form = document.getElementById('formPublicar');
     
-    // cambiás el título del modal
+    // cambio el título del modal  (PARA REUTILIZAR EL MODAL DE NUEVA PUB)
     ventana.querySelector('h2').textContent = 'Editar Publicación';
     
-    // cargás los datos
+    // cargo los datos
     form.querySelector('input[name="titulo"]').value = titulo;
     form.querySelector('input[name="descripcion"]').value = descripcion;
     form.querySelector('input[name="etiquetas"]').value = etiquetas;
     
-    // cambiás el action del form al endpoint de editar
+    // cambio el action del form a  editar
     form.action = `/publicaciones/${id}/editar`;
     
     ventana.style.display = 'flex';
@@ -169,9 +169,7 @@ function cerrarNuevaPublicacion() {
     if (ventana) {
         ventana.style.display = 'none';
         form.reset();
-        // restaurás el action original
         form.action = '/publicar';
-        // restaurás el título
         ventana.querySelector('h2').textContent = 'Nueva Publicación';
         document.getElementById('contenedorInputsBase64').innerHTML = '';
         document.getElementById('previsualizacion').innerHTML = '';

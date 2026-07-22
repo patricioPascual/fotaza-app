@@ -5,10 +5,17 @@ function toggleMenu() {
 
     
   function showToast(mensaje, tipo = 'success') {
-    const modalAbierto = document.getElementById('modalComentarios')?.style.display === 'flex';
-    const containerId = modalAbierto ? 'toast-container' : 'toast-container-global';
-    const container = document.getElementById(containerId);
+    const modalReporteAbierto = document.getElementById('modalReporte')?.style.display === 'flex';
+    const modalComentariosAbierto = document.getElementById('modalComentarios')?.style.display === 'flex';
     
+    let containerId;
+    if (modalReporteAbierto || (!modalComentariosAbierto)) {
+        containerId = 'toast-container-global';
+    } else {
+        containerId = 'toast-container';
+    }
+    
+    const container = document.getElementById(containerId);
     const toast = document.createElement('div');
     toast.className = `toast ${tipo}`;
     toast.textContent = mensaje;
@@ -22,8 +29,7 @@ function toggleColeccion(btn) {
     form.classList.toggle('oculto');
 }
 
-// 2. Lógica del select "nueva"
-// Cambia tu función checkNueva por esta
+
 function checkNueva(select) {
     const form = select.closest('form'); // Busca el form padre
     const input = form.querySelector('.input-nueva'); // Busca dentro del form
@@ -36,3 +42,52 @@ function checkNueva(select) {
         input.required = false;
     }
 }
+
+async function eliminarColeccion(idColeccion) {
+    if (!confirm('¿Estás seguro de que querés eliminar esta colección?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/colecciones/${idColeccion}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast(data.message || 'Colección eliminada correctamente.', 'success');
+         
+            const tarjeta = document.getElementById(`coleccion-${idColeccion}`);
+            if (tarjeta) {
+                tarjeta.remove();
+            }
+        } else {
+            showToast(data.error || 'Error al eliminar la colección.', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Error de conexión con el servidor.', 'error');
+    }
+}
+
+async function quitarDeColeccion(idColeccion, idPublicacion) {
+        if (!confirm('¿Seguro querés quitar esta publicación de la colección?')) return;
+
+        try {
+            const res = await fetch(`/colecciones/${idColeccion}/publicaciones/${idPublicacion}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                showToast(data.message || 'Publicación removida', 'success');
+                // Borramos la tarjeta visualmente al instante
+                document.getElementById(`pub-en-col-${idPublicacion}`)?.remove();
+            } else {
+                showToast(data.error || 'Error al remover', 'error');
+            }
+        } catch (e) {
+            showToast('Error de conexión', 'error');
+        }
+    }

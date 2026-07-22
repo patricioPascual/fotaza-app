@@ -16,13 +16,14 @@ block main_content
           input(type="text" name="nombreColeccion" placeholder="Nombre de nueva colección" required)
           button.btn-guardar(type="submit") + Crear Nueva Colección
 
-      //- Listado de colecciones (Solo mostramos el nombre como link)
+      
       if colecciones && colecciones.length > 0
         div.colecciones-grid
           each col in colecciones
+           div.coleccion-card(id=`coleccion-${col.idcoleccion}`)
             div.coleccion-card
               a(href=`/colecciones/${col.idcoleccion}`)
                 h2 📁 #{col.nombre}
-                p #{col.publicaciones ? col.publicaciones.length : 0} publicaciones
+              button.btn-eliminar-col(type="button" onclick=`eliminarColeccion(${col.idcoleccion})` title="Eliminar colección") 🗑️  
       else
         p Aún no tienes colecciones creadas.

@@ -5,11 +5,11 @@ import { crearReporte, bajarPublicacion,
          desestrimarReportes,
          desestimarReporteComentario,
          getPublicacionesEnRevision } from '../controller/reporteController.js';
-import { requireAuth, requireAdmin } from '../middlewares/auth.js';
+import { requireAdmin } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/', requireAuth, crearReporte);
+router.post('/',  crearReporte);
 router.get('/admin/revisiones', requireAdmin, getPublicacionesEnRevision);
 router.post('/admin/:idpublicacion/bajar', requireAdmin, bajarPublicacion);
 router.post('/admin/:idpublicacion/desestimar', requireAdmin, desestrimarReportes);

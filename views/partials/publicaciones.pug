@@ -34,7 +34,7 @@ div.foto-card
       form.form-colecciones.oculto(action="/colecciones/agregar" method="POST")
         input(type="hidden" name="idPublicacion" value=pub.idpublicacion)
         select.select-coleccion(name="idColeccion" onchange="checkNueva(this)")
-          //- Verificamos que 'colecciones' exista antes de iterar
+      
           if typeof colecciones !== 'undefined' && colecciones && colecciones.length > 0
             each col in colecciones
               option(value=col.idcoleccion)= col.nombre
