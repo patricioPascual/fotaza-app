@@ -3,23 +3,6 @@ function nuevaPublicacion() {
     if (ventana) ventana.style.display = 'flex';
 }
 
-/*function cerrarNuevaPublicacion() {
-    const ventana = document.getElementById('nuevaPublicacion');
-    if (ventana) {
-        ventana.style.display = 'none';
-        
-        document.getElementById('formPublicar').reset();
-        document.getElementById('contenedorInputsBase64').innerHTML = '';
-        document.getElementById('previsualizacion').innerHTML = ''; 
-    }
-}*/  
-
-/*window.onclick = function(event) {
-    const ventana = document.getElementById('nuevaPublicacion');
-    if (event.target == ventana) {
-        cerrarVentana();
-    }
-}*/
 
 document.addEventListener('DOMContentLoaded', () => {
     const inputArchivo = document.getElementById('inputArchivo');
